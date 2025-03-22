@@ -2,17 +2,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
-import { 
+
+// 1) Firestore import
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // <-- Make sure this path is correct
+
+import emailjs from 'emailjs-com';
+
+import {
   FiMapPin,
   FiPhone,
   FiMail,
-  FiClock,
   FiCheckCircle,
   FiMoon,
   FiSun,
   FiShoppingCart,
-  FiMenu // Added FiMenu for the hamburger icon
+  FiMenu
 } from 'react-icons/fi';
 
 function ContactPage() {
@@ -23,10 +28,10 @@ function ContactPage() {
   });
   const [submitStatus, setSubmitStatus] = useState('');
   const [isDark, setIsDark] = useState(() => 
-    localStorage.getItem('theme') === 'dark' || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches)
+    localStorage.getItem('theme') === 'dark' ||
+    window.matchMedia('(prefers-color-scheme: dark)').matches
   );
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Nav links
   const navLinks = [
@@ -38,27 +43,55 @@ function ContactPage() {
     { name: 'Contact', href: '/contact' }
   ];
 
+  // Handle form input
   const handleChange = (e) => {
     setFormData({
-      ...formData, 
+      ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
+  // 2) Handle the form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitStatus('');
+
     try {
-      // Simulate API call
+      // 2a) Save the message to Firestore
+      await addDoc(collection(db, 'contactMessages'), {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        createdAt: new Date().toISOString(),
+      });
+
+      // 2b) (Optional) Send email with EmailJS
+      //
+      await emailjs.send(
+        'service_ghr2eof',
+        'template_iz61gxi',
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message_html: formData.message
+        },
+        'CTjPFailhC8FrnPJ3'
+      );
+
       setSubmitStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+
+      // Clear the success notification after 3s
       setTimeout(() => {
         setSubmitStatus('');
-        setFormData({ name: '', email: '', message: '' });
       }, 3000);
     } catch (err) {
+      console.error('Error sending contact message:', err);
       setSubmitStatus('error');
     }
   };
 
+  // Dark mode
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -81,11 +114,6 @@ function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
-              {/* <img 
-                src="/logo.svg" 
-                className="h-12 w-auto dark:invert" 
-                alt="Preferred Vending Logo" 
-              /> */}
               <span className="text-2xl font-bold gradient-text">
                 Preferred <span className="font-light">Vending</span>
               </span>
@@ -247,7 +275,7 @@ function ContactPage() {
 
               {submitStatus === 'success' && (
                 <div className="p-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-lg mt-4">
-                  Message sent successfully! We'll respond within 24 hours.
+                  Message sent successfully! We’ll respond within 24 hours.
                 </div>
               )}
               
@@ -259,7 +287,7 @@ function ContactPage() {
             </form>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Contact Info, etc. */}
           <div className="space-y-8">
             <div className="p-8 bg-primary-50 dark:bg-gray-800 rounded-2xl shadow-lg">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
@@ -293,7 +321,7 @@ function ContactPage() {
               </div>
             </div>
 
-            {/* Trust Badges */}
+            {/* Trust Badges, etc... */}
             <div className="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Why Choose Us</h3>
               <div className="grid grid-cols-2 gap-4">
