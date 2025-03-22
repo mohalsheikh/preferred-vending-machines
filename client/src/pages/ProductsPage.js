@@ -12,7 +12,8 @@ import {
   FiSun,
   FiMapPin,
   FiPhone,
-  FiMail
+  FiMail,
+  FiMenu // Added FiMenu for the hamburger icon
 } from 'react-icons/fi';
 
 function ProductsPage() {
@@ -21,8 +22,12 @@ function ProductsPage() {
     localStorage.getItem('theme') === 'dark' || 
     (window.matchMedia('(prefers-color-scheme: dark)').matches)
   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
 
+  // Nav links
   const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Technology', href: '/technology' },
     { name: 'Products', href: '/products' },
     { name: 'Solutions', href: '/solutions' },
     { name: 'About', href: '/about' },
@@ -103,10 +108,19 @@ function ProductsPage() {
                 alt="Preferred Vending Logo" 
               /> */}
               <span className="text-2xl font-bold gradient-text">
-              Preferred <span className="font-light">Vending</span>
+                Preferred <span className="font-light">Vending</span>
               </span>
             </motion.div>
-            
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <FiMenu className="text-xl text-gray-600 dark:text-gray-300" />
+            </button>
+
+            {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
                 <motion.a
@@ -119,8 +133,9 @@ function ProductsPage() {
                 </motion.a>
               ))}
             </div>
-            
-            <div className="flex items-center gap-4">
+
+            {/* Actions (Dark Mode + Get Started) */}
+            <div className="hidden md:flex items-center gap-4">
               <motion.button
                 onClick={() => setIsDark(!isDark)}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -132,7 +147,7 @@ function ProductsPage() {
                   <FiMoon className="text-xl text-gray-600" />
                 )}
               </motion.button>
-              
+
               <motion.button
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
@@ -141,6 +156,40 @@ function ProductsPage() {
               </motion.button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4">
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setIsDark(!isDark)}
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    {isDark ? (
+                      <FiSun className="text-xl text-yellow-400" />
+                    ) : (
+                      <FiMoon className="text-xl text-gray-600" />
+                    )}
+                  </button>
+                  <button
+                    className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
+                  >
+                    <FiShoppingCart /> Get Started
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </motion.nav>
 

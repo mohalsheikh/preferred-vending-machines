@@ -14,7 +14,8 @@ import {
   FiSun, 
   FiMapPin, 
   FiPhone, 
-  FiMail 
+  FiMail,
+  FiMenu // Added FiMenu for the hamburger icon
 } from 'react-icons/fi';
 
 function AdminDashboard() {
@@ -23,12 +24,23 @@ function AdminDashboard() {
     localStorage.getItem('theme') === 'dark' || 
     (window.matchMedia('(prefers-color-scheme: dark)').matches)
   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
   const [products, setProducts] = useState([
     { id: 1, name: 'Organic Chips', category: 'Snacks', price: 2.5 },
     { id: 2, name: 'Energy Bar', category: 'Healthy', price: 3.0 },
     { id: 3, name: 'Sparkling Water', category: 'Drinks', price: 1.5 },
   ]);
   const [newProduct, setNewProduct] = useState({ name: '', category: '', price: '' });
+
+  // Nav links
+  const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Technology', href: '/technology' },
+    { name: 'Products', href: '/products' },
+    { name: 'Solutions', href: '/solutions' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -81,11 +93,34 @@ function AdminDashboard() {
                 alt="Preferred Vending Logo" 
               /> */}
               <span className="text-2xl font-bold gradient-text">
-              Preferred <span className="font-light">Vending</span>
+                Preferred <span className="font-light">Vending</span>
               </span>
             </motion.div>
-            
-            <div className="flex items-center gap-4">
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <FiMenu className="text-xl text-gray-600 dark:text-gray-300" />
+            </button>
+
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+                  whileHover={{ y: -2 }}
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+            </div>
+
+            {/* Actions (Dark Mode + Logout) */}
+            <div className="hidden md:flex items-center gap-4">
               <motion.button
                 onClick={() => setIsDark(!isDark)}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -97,7 +132,7 @@ function AdminDashboard() {
                   <FiMoon className="text-xl text-gray-600" />
                 )}
               </motion.button>
-              
+
               <motion.button
                 onClick={handleLogout}
                 className="px-6 py-2.5 bg-red-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-red-700 transition-all"
@@ -107,6 +142,41 @@ function AdminDashboard() {
               </motion.button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4">
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setIsDark(!isDark)}
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    {isDark ? (
+                      <FiSun className="text-xl text-yellow-400" />
+                    ) : (
+                      <FiMoon className="text-xl text-gray-600" />
+                    )}
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="px-6 py-2.5 bg-red-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-red-700 transition-all"
+                  >
+                    <FiLogOut /> Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </motion.nav>
 

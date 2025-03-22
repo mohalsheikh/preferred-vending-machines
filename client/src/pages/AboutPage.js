@@ -1,402 +1,3 @@
-// // src/pages/AboutPage.js
-// import React, { useState, useEffect } from 'react';
-// import { motion, useScroll, useTransform } from 'framer-motion';
-// import { Helmet } from 'react-helmet-async';
-
-
-// import {
-//   FiMoon,
-//   FiSun,
-//   FiShoppingCart,
-//   FiZap,
-//   FiStar,
-//   FiSettings,
-//   FiChevronRight,
-// } from 'react-icons/fi';
-
-// // Swiper (if you need it elsewhere on this page, otherwise remove)
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Autoplay, EffectCreative } from 'swiper/modules';
-// import 'swiper/css';
-// import 'swiper/css/effect-creative';
-
-// function AboutPage() {
-//   const [isDark, setIsDark] = useState(() =>
-//     localStorage.getItem('theme') === 'dark' ||
-//     window.matchMedia('(prefers-color-scheme: dark)').matches
-//   );
-  
-//   // Framer motion scroll progress
-//   const { scrollYProgress } = useScroll();
-//   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
-//   // Sync theme preference with localStorage
-//   useEffect(() => {
-//     if (isDark) {
-//       document.documentElement.classList.add('dark');
-//       localStorage.setItem('theme', 'dark');
-//     } else {
-//       document.documentElement.classList.remove('dark');
-//       localStorage.setItem('theme', 'light');
-//     }
-//   }, [isDark]);
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-//       {/* Helmet for SEO */}
-//       <Helmet>
-//         <title>About Us - Preferred Vending Machines</title>
-//         <meta
-//           name="description"
-//           content="Learn more about Preferred Vending Machines' mission, history, and values."
-//         />
-//       </Helmet>
-
-//       {/* Scroll Progress Indicator */}
-//       <motion.div
-//         className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary-600 to-primary-700 z-50"
-//         style={{ scaleX: scrollYProgress }}
-//       />
-
-//       {/* Navigation (same style as HomePage) */}
-//       <motion.nav className="fixed w-full z-40 backdrop-blur-lg bg-white/90 dark:bg-gray-900/80 shadow-lg">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-//           {/* Logo & Brand */}
-//           <motion.div
-//             whileHover={{ scale: 1.05 }}
-//             className="flex items-center gap-2 cursor-pointer"
-//           >
-//             <img
-//               src="/logo.svg"
-//               className="h-14 w-auto dark:invert"
-//               alt="Premium Vending Solutions"
-//             />
-//             <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-//               VEND<span className="font-light">Vending</span>
-//             </span>
-//           </motion.div>
-
-//           {/* Nav Links + Actions */}
-//           <div className="flex items-center gap-6">
-//             {/* Desktop Nav */}
-//             <ul className="hidden md:flex items-center gap-6">
-//               <li>
-//                 <a
-//                   href="/"
-//                   className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-//                 >
-//                   Home
-//                 </a>
-//               </li>
-//               <li>
-//                 <a
-//                   href="/products"
-//                   className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-//                 >
-//                   Products
-//                 </a>
-//               </li>
-//               <li>
-//                 <a
-//                   href="/pricing"
-//                   className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-//                 >
-//                   Pricing
-//                 </a>
-//               </li>
-//               <li>
-//                 <a
-//                   href="/about"
-//                   className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-//                 >
-//                   About
-//                 </a>
-//               </li>
-//               <li>
-//                 <a
-//                   href="/contact"
-//                   className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-//                 >
-//                   Contact
-//                 </a>
-//               </li>
-//             </ul>
-
-//             {/* Dark Mode Toggle */}
-//             <motion.button
-//               onClick={() => setIsDark(!isDark)}
-//               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-//               whileHover={{ rotate: 15 }}
-//             >
-//               {isDark ? (
-//                 <FiSun className="text-xl text-yellow-400" />
-//               ) : (
-//                 <FiMoon className="text-xl text-gray-600" />
-//               )}
-//             </motion.button>
-
-//             {/* CTA Button (optional) */}
-//             <motion.button
-//               className="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
-//               whileHover={{ scale: 1.05 }}
-//             >
-//               <FiShoppingCart /> Get Started
-//             </motion.button>
-//           </div>
-//         </div>
-//       </motion.nav>
-
-//       {/* Hero/Intro Section for About Page */}
-//       <section className="relative flex items-center justify-center h-80 md:h-96 overflow-hidden mt-[76px]">
-//         {/* Simple background gradient overlay for hero */}
-//         <div className="absolute inset-0 bg-gradient-to-r from-primary-600/20 to-primary-700/20 dark:from-primary-700/30 dark:to-primary-900/30" />
-//         <div className="relative z-10 text-center px-4">
-//           <motion.h1
-//             className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4"
-//             initial={{ opacity: 0, y: 20 }}
-//             animate={{ opacity: 1, y: 0 }}
-//           >
-//             About <span className="bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">Preferred Vending</span>
-//           </motion.h1>
-//           <motion.p
-//             className="max-w-2xl mx-auto text-lg text-gray-700 dark:text-gray-300"
-//             initial={{ opacity: 0, y: 20 }}
-//             animate={{ opacity: 1, y: 0 }}
-//           >
-//             Discover our journey, mission, and commitment to innovative vending solutions.
-//           </motion.p>
-//         </div>
-//       </section>
-
-//       {/* Main About Content */}
-//       <section className="py-12 md:py-16 bg-white dark:bg-gray-900">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-//           {/* Our Story */}
-//           <div className="space-y-6">
-//             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-//               Our Story
-//             </h2>
-//             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-//               Preferred Vending Machines, operating under the brand Preferred Vending,” has been
-//               providing top-notch vending services for over 10 years. We started with a simple
-//               goal: to revolutionize the vending machine industry by integrating modern
-//               technology, healthy product options, and exceptional customer support.
-//             </p>
-//           </div>
-
-//           {/* Mission & Values */}
-//           <div className="grid md:grid-cols-2 gap-12 items-start">
-//             <div className="space-y-6">
-//               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-//                 Our Mission
-//               </h3>
-//               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-//                 Our mission is to deliver reliable, smart, and healthy vending solutions
-//                 to businesses and communities worldwide. We strive to leverage AI, IoT,
-//                 and data analytics to enhance consumer experiences and ensure maximum
-//                 profitability for our partners.
-//               </p>
-//             </div>
-//             <div className="space-y-6">
-//               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-//                 Our Values
-//               </h3>
-//               <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-//                 <li className="flex items-center gap-2">
-//                   <FiZap className="text-primary-600 dark:text-primary-500" />
-//                   Innovation
-//                 </li>
-//                 <li className="flex items-center gap-2">
-//                   <FiStar className="text-primary-600 dark:text-primary-500" />
-//                   Quality
-//                 </li>
-//                 <li className="flex items-center gap-2">
-//                   <FiSettings className="text-primary-600 dark:text-primary-500" />
-//                   Reliability
-//                 </li>
-//                 <li className="flex items-center gap-2">
-//                   <FiShoppingCart className="text-primary-600 dark:text-primary-500" />
-//                   Customer-centric
-//                 </li>
-//               </ul>
-//             </div>
-//           </div>
-
-//           {/* Timeline / Milestones */}
-//           <div className="space-y-6">
-//             <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-//               Our Journey
-//             </h3>
-//             <div className="border-l border-gray-200 dark:border-gray-700 pl-6 space-y-8">
-//               <div className="relative">
-//                 <span className="absolute -left-3 top-1.5 bg-primary-600 text-white rounded-full p-2">
-//                   2012
-//                 </span>
-//                 <p className="text-gray-700 dark:text-gray-300">
-//                   Founded by a small team passionate about automating retail for healthier snacks
-//                   and drinks.
-//                 </p>
-//               </div>
-//               <div className="relative">
-//                 <span className="absolute -left-3 top-1.5 bg-primary-600 text-white rounded-full p-2">
-//                   2015
-//                 </span>
-//                 <p className="text-gray-700 dark:text-gray-300">
-//                   Introduced AI-driven inventory management to reduce stock-outs by 40%.
-//                 </p>
-//               </div>
-//               <div className="relative">
-//                 <span className="absolute -left-3 top-1.5 bg-primary-600 text-white rounded-full p-2">
-//                   2018
-//                 </span>
-//                 <p className="text-gray-700 dark:text-gray-300">
-//                   Expanded to international markets, supporting over 5,000 vending machines.
-//                 </p>
-//               </div>
-//               <div className="relative">
-//                 <span className="absolute -left-3 top-1.5 bg-primary-600 text-white rounded-full p-2">
-//                   2023
-//                 </span>
-//                 <p className="text-gray-700 dark:text-gray-300">
-//                   Launched next-gen IoT solutions with cloud-based analytics and remote control.
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* Interactive Chat Bubble (optional, for consistency) */}
-//       <motion.div
-//         className="fixed bottom-6 right-6 z-50"
-//         initial={{ scale: 0 }}
-//         animate={{ scale: 1 }}
-//         transition={{ delay: 1.5 }}
-//       >
-//         <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-4 w-72">
-//           <div className="absolute -bottom-2 -right-2 bg-primary-600 text-white p-3 rounded-full shadow-lg">
-//             <FiShoppingCart className="text-xl" />
-//           </div>
-//           <div className="space-y-3">
-//             <h3 className="font-semibold dark:text-white">Got questions?</h3>
-//             <p className="text-sm text-gray-600 dark:text-gray-300">
-//               Our AI assistant is ready to tell you more about us.
-//             </p>
-//             <button className="w-full py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
-//               Chat Now
-//             </button>
-//           </div>
-//         </div>
-//       </motion.div>
-
-//       {/* Footer (same style as HomePage) */}
-//       <footer className="bg-gray-50 dark:bg-gray-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800 mt-12">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-//           <div className="grid md:grid-cols-4 gap-8 text-gray-700 dark:text-gray-200">
-//             {/* Column 1: Company */}
-//             <div>
-//               <h3 className="text-lg font-semibold mb-3">Company</h3>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="/about" className="hover:text-primary-500 transition-colors">
-//                     About Us
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Careers
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Press
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             {/* Column 2: Products */}
-//             <div>
-//               <h3 className="text-lg font-semibold mb-3">Products</h3>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Vending Machines
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Smart Kiosks
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Mobile App
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             {/* Column 3: Resources */}
-//             <div>
-//               <h3 className="text-lg font-semibold mb-3">Resources</h3>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Help Center
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Blog
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Webinars
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             {/* Column 4: Follow Us */}
-//             <div>
-//               <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Twitter
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     LinkedIn
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-primary-500 transition-colors">
-//                     Instagram
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-//           </div>
-
-//           <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
-//             <p className="text-gray-600 dark:text-gray-500">
-//               © 2024 Preferred Vending. All rights reserved.
-//             </p>
-//           </div>
-//         </div>
-//       </footer>
-//     </div>
-//   );
-// }
-
-// export default AboutPage;
-
-
-
 // src/pages/AboutPage.js
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -414,7 +15,8 @@ import {
   FiSun,
   FiShoppingCart,
   FiMail,
-  FiPhone
+  FiPhone,
+  FiMenu
 } from 'react-icons/fi';
 
 function AboutPage() {
@@ -423,8 +25,11 @@ function AboutPage() {
     localStorage.getItem('theme') === 'dark' || 
     (window.matchMedia('(prefers-color-scheme: dark)').matches)
   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Technology', href: '/technology' },
     { name: 'Products', href: '/products' },
     { name: 'Solutions', href: '/solutions' },
     { name: 'About', href: '/about' },
@@ -472,10 +77,19 @@ function AboutPage() {
                 alt="Preferred Vending Logo" 
               /> */}
               <span className="text-2xl font-bold gradient-text">
-              Preferred <span className="font-light">Vending</span>
+                Preferred <span className="font-light">Vending</span>
               </span>
             </motion.div>
-            
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <FiMenu className="text-xl text-gray-600 dark:text-gray-300" />
+            </button>
+
+            {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
                 <motion.a
@@ -488,8 +102,9 @@ function AboutPage() {
                 </motion.a>
               ))}
             </div>
-            
-            <div className="flex items-center gap-4">
+
+            {/* Actions (Dark Mode + Get Started) */}
+            <div className="hidden md:flex items-center gap-4">
               <motion.button
                 onClick={() => setIsDark(!isDark)}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -501,7 +116,7 @@ function AboutPage() {
                   <FiMoon className="text-xl text-gray-600" />
                 )}
               </motion.button>
-              
+
               <motion.button
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
@@ -510,6 +125,40 @@ function AboutPage() {
               </motion.button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4">
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setIsDark(!isDark)}
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    {isDark ? (
+                      <FiSun className="text-xl text-yellow-400" />
+                    ) : (
+                      <FiMoon className="text-xl text-gray-600" />
+                    )}
+                  </button>
+                  <button
+                    className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
+                  >
+                    <FiShoppingCart /> Get Started
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </motion.nav>
 
