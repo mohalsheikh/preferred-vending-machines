@@ -40,7 +40,7 @@
 //                 className="h-12 w-auto" 
 //                 alt="Premium Vending Solutions" 
 //               />
-//               <span className="text-xl font-bold text-gray-800">VendTech</span>
+//               <span className="text-xl font-bold text-gray-800">Preferred Vending</span>
 //             </motion.div>
             
 //             <div className="hidden md:flex items-center gap-8">
@@ -169,8 +169,8 @@
 //           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 //             <div className="space-y-6">
 //               <div className="flex items-center gap-3">
-//                 <img src="/logo-white.svg" className="h-10 w-auto" alt="VendTech" />
-//                 <span className="text-xl font-semibold text-white">VendTech</span>
+//                 <img src="/logo-white.svg" className="h-10 w-auto" alt="Preferred Vending" />
+//                 <span className="text-xl font-semibold text-white">Preferred Vending</span>
 //               </div>
 //               <p className="text-gray-400">
 //                 Leading innovation in automated retail solutions since 2020
@@ -222,7 +222,7 @@
 //           </div>
 
 //           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
-//             <p>© 2024 VendTech. All rights reserved.</p>
+//             <p>© 2024 Preferred Vending. All rights reserved.</p>
 //           </div>
 //         </div>
 //       </footer>
@@ -252,8 +252,270 @@
 // export default HomePage;
 
 
+// // src/pages/HomePage.js
+// import { FiCheckCircle, FiChevronRight, FiPlay, FiSettings, FiShoppingCart, FiStar, FiZap, FiMoon, FiSun, FiMapPin, FiPhone, FiMail } from 'react-icons/fi';
+// import React, { useState, useEffect } from 'react';
+// import { motion, useScroll, useTransform } from 'framer-motion';
+// import { Helmet } from 'react-helmet-async';
+// import ReactPlayer from 'react-player';
+// import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Autoplay, EffectCreative } from 'swiper/modules';
+// import 'swiper/css';
+// import 'swiper/css/effect-creative';
+
+// function HomePage() {
+//   const [isDark, setIsDark] = useState(() => {
+//     return localStorage.getItem('theme') === 'dark' || 
+//            window.matchMedia('(prefers-color-scheme: dark)').matches;
+//   });
+  
+//   const { scrollYProgress } = useScroll();
+//   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
+//   useEffect(() => {
+//     if (isDark) {
+//       document.documentElement.classList.add('dark');
+//       localStorage.setItem('theme', 'dark');
+//     } else {
+//       document.documentElement.classList.remove('dark');
+//       localStorage.setItem('theme', 'light');
+//     }
+//   }, [isDark]);
+
+//   const features = [
+//     { icon: <FiZap />, title: "Instant Service", text: "AI-powered quick response system" },
+//     { icon: <FiShoppingCart />, title: "Smart Inventory", text: "Real-time stock monitoring" },
+//     { icon: <FiStar />, title: "Premium Quality", text: "Commercial-grade components" },
+//     { icon: <FiSettings />, title: "Remote Control", text: "Cloud-based management" }
+//   ];
+
+//   const navLinks = [
+//     { name: 'Products', href: '/products' },
+//     { name: 'Solutions', href: '/solutions' },
+//     { name: 'About', href: '/about' },
+//     { name: 'Contact', href: '/contact' }
+//   ];
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+//       <Helmet>
+//         <title>Next-Gen Vending Solutions | Preferred Vending</title>
+//       </Helmet>
+
+//       {/* Scroll Progress Indicator */}
+//       <motion.div
+//         className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600 z-50"
+//         style={{ scaleX: scrollYProgress }}
+//       />
+
+//       {/* Navigation */}
+//       <motion.nav className="fixed w-full z-40 backdrop-blur-lg bg-white/90 dark:bg-gray-900/80 shadow-sm">
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+//           <div className="flex justify-between items-center">
+//             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
+//               <img 
+//                 src="/logo.svg" 
+//                 className="h-12 w-auto dark:invert" 
+//                 alt="Premium Vending Solutions" 
+//               />
+//               <span className="text-2xl font-bold gradient-text">
+//                 Green<span className="font-light">Vend</span>
+//               </span>
+//             </motion.div>
+            
+//             <div className="hidden md:flex items-center gap-8">
+//               {navLinks.map((link) => (
+//                 <motion.a
+//                   key={link.name}
+//                   href={link.href}
+//                   className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+//                   whileHover={{ y: -2 }}
+//                 >
+//                   {link.name}
+//                 </motion.a>
+//               ))}
+//             </div>
+            
+//             <div className="flex items-center gap-4">
+//               <motion.button
+//                 onClick={() => setIsDark(!isDark)}
+//                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+//                 whileHover={{ rotate: 15 }}
+//               >
+//                 {isDark ? (
+//                   <FiSun className="text-xl text-yellow-400" />
+//                 ) : (
+//                   <FiMoon className="text-xl text-gray-600" />
+//                 )}
+//               </motion.button>
+              
+//               <motion.button
+//                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
+//                 whileHover={{ scale: 1.05 }}
+//               >
+//                 <FiShoppingCart /> Get Started
+//               </motion.button>
+//             </div>
+//           </div>
+//         </div>
+//       </motion.nav>
+
+//       {/* Hero Section */}
+//       <section className="relative h-screen flex items-center justify-center overflow-hidden pt-20">
+//         <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-primary-600/20 dark:from-primary-900/40 dark:to-primary-800/40" />
+        
+//         <motion.div 
+//           className="relative z-10 text-center px-4 space-y-8"
+//           initial={{ opacity: 0, y: 20 }}
+//           animate={{ opacity: 1, y: 0 }}
+//         >
+//           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
+//             Sustainable
+//             <span className="block mt-4 gradient-text">
+//               Vending Innovation
+//             </span>
+//           </h1>
+//           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+//             Eco-friendly smart retail systems powered by AI and IoT
+//           </p>
+//           <div className="flex justify-center gap-4">
+//             <motion.button
+//               className="px-8 py-4 bg-primary-600 text-white rounded-xl flex items-center gap-2 shadow-2xl hover:shadow-3xl hover:bg-primary-700 transition-all"
+//               whileHover={{ scale: 1.05 }}
+//             >
+//               <FiPlay /> Watch Demo
+//             </motion.button>
+//             <motion.button
+//               className="px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all gradient-border"
+//               whileHover={{ scale: 1.05 }}
+//             >
+//               Explore Features
+//             </motion.button>
+//           </div>
+//         </motion.div>
+//       </section>
+
+//       {/* Features Grid */}
+//       <section className="py-24 bg-white dark:bg-gray-900">
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+//           <div className="grid lg:grid-cols-2 gap-16 items-center">
+//             <div className="space-y-8">
+//               <h2 className="text-4xl font-bold gradient-text">
+//                 Smart Retail Ecosystem
+//               </h2>
+//               <div className="grid grid-cols-2 gap-6">
+//                 {features.map((feature, index) => (
+//                   <motion.div
+//                     key={feature.title}
+//                     className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all group border border-transparent hover:border-primary-100 dark:hover:border-primary-900"
+//                     initial={{ opacity: 0, y: 50 }}
+//                     whileInView={{ opacity: 1, y: 0 }}
+//                     transition={{ delay: index * 0.1 }}
+//                   >
+//                     <div className="text-primary-600 dark:text-primary-400 text-3xl mb-4 transition-colors">
+//                       {feature.icon}
+//                     </div>
+//                     <h3 className="text-xl font-semibold mb-2 dark:text-white">{feature.title}</h3>
+//                     <p className="text-gray-600 dark:text-gray-400">{feature.text}</p>
+//                   </motion.div>
+//                 ))}
+//               </div>
+//             </div>
+            
+//             <div className="relative h-[600px] rounded-3xl overflow-hidden border-8 border-white dark:border-gray-800 shadow-2xl">
+//               <img
+//                 src="https://via.placeholder.com/800x600.png?text=Smart+Vending+Interface"
+//                 alt="Smart interface"
+//                 className="w-full h-full object-cover"
+//               />
+//               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* Modern Footer */}
+//       <footer className="bg-gray-50 dark:bg-gray-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800">
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+//           <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
+//             <div className="space-y-4">
+//               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Preferred Vending</h3>
+//               <p className="text-sm">Innovating sustainable vending solutions through cutting-edge technology.</p>
+//               <div className="flex items-center gap-2">
+//                 <FiMapPin className="text-primary-600" />
+//                 <span>123 Green Street, Eco City</span>
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <FiPhone className="text-primary-600" />
+//                 <span>+1 (555) 123-4567</span>
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <FiMail className="text-primary-600" />
+//                 <span>info@Preferred Vending.com</span>
+//               </div>
+//             </div>
+            
+//             <div className="space-y-4">
+//               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Products</h3>
+//               <ul className="space-y-2">
+//                 {['Smart Vending', 'Inventory System', 'Mobile App', 'Analytics'].map((item) => (
+//                   <li key={item}>
+//                     <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+            
+//             <div className="space-y-4">
+//               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Company</h3>
+//               <ul className="space-y-2">
+//                 {['About Us', 'Careers', 'Blog', 'Partners'].map((item) => (
+//                   <li key={item}>
+//                     <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+            
+//             <div className="space-y-4">
+//               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Legal</h3>
+//               <ul className="space-y-2">
+//                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'FAQs'].map((item) => (
+//                   <li key={item}>
+//                     <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           </div>
+          
+//           <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+//             <p className="text-gray-500 dark:text-gray-600">
+//               © 2024 Preferred Vending. All rights reserved.
+//             </p>
+//           </div>
+//         </div>
+//       </footer>
+//     </div>
+//   );
+// }
+// export default HomePage;
+
 // src/pages/HomePage.js
-import { FiCheckCircle, FiChevronRight, FiPlay, FiSettings, FiShoppingCart, FiStar, FiZap, FiMoon, FiSun } from 'react-icons/fi';
+import {
+  FiCheckCircle,
+  FiChevronRight,
+  FiPlay,
+  FiSettings,
+  FiShoppingCart,
+  FiStar,
+  FiZap,
+  FiMoon,
+  FiSun,
+  FiMapPin,
+  FiPhone,
+  FiMail
+} from 'react-icons/fi';
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -264,9 +526,9 @@ import 'swiper/css';
 import 'swiper/css/effect-creative';
 
 function HomePage() {
-  const [isDark, setIsDark] = useState(() => 
-    localStorage.getItem('theme') === 'dark' || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const [isDark, setIsDark] = useState(() =>
+    localStorage.getItem('theme') === 'dark' ||
+    window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
@@ -282,40 +544,61 @@ function HomePage() {
   }, [isDark]);
 
   const features = [
-    { icon: <FiZap />, title: "Instant Service", text: "AI-powered quick response system" },
-    { icon: <FiShoppingCart />, title: "Smart Inventory", text: "Real-time stock monitoring" },
-    { icon: <FiStar />, title: "Premium Quality", text: "Commercial-grade components" },
-    { icon: <FiSettings />, title: "Remote Control", text: "Cloud-based management" }
+    { icon: <FiZap />, title: 'Instant Service', text: 'AI-powered quick response system' },
+    { icon: <FiShoppingCart />, title: 'Smart Inventory', text: 'Real-time stock monitoring' },
+    { icon: <FiStar />, title: 'Premium Quality', text: 'Commercial-grade components' },
+    { icon: <FiSettings />, title: 'Remote Control', text: 'Cloud-based management' }
+  ];
+
+  const navLinks = [
+    { name: 'Products', href: '/products' },
+    { name: 'Solutions', href: '/solutions' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+      {/* Helmet for SEO */}
       <Helmet>
         <title>Next-Gen Vending Solutions | Preferred Vending</title>
       </Helmet>
 
       {/* Scroll Progress Indicator */}
       <motion.div
-        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-50"
+        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary-500 to-primary-700 z-50"
         style={{ scaleX: scrollYProgress }}
       />
 
-      {/* Navigation */}
-      <motion.nav className="fixed w-full z-40 backdrop-blur-lg bg-white/90 dark:bg-gray-900/80 shadow-lg">
+      {/* Navbar */}
+      <motion.nav className="fixed w-full z-40 backdrop-blur-lg bg-white/90 dark:bg-gray-900/80 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
               <img 
                 src="/logo.svg" 
-                className="h-14 w-auto dark:invert" 
-                alt="Premium Vending Solutions" 
+                className="h-12 w-auto dark:invert" 
+                alt="GreenVend Logo" 
               />
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
-                VEND<span className="font-light">TECH</span>
+              <span className="text-2xl font-bold gradient-text">
+                Green<span className="font-light">Vend</span>
               </span>
             </motion.div>
             
-            <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+                  whileHover={{ y: -2 }}
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+            </div>
+            
+            <div className="flex items-center gap-4">
               <motion.button
                 onClick={() => setIsDark(!isDark)}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -329,7 +612,7 @@ function HomePage() {
               </motion.button>
               
               <motion.button
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-500 text-white rounded-xl flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
                 <FiShoppingCart /> Get Started
@@ -341,16 +624,15 @@ function HomePage() {
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-900/40 dark:to-purple-900/40" />
-        
-        <motion.div 
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-primary-700/20 dark:from-primary-700/30 dark:to-primary-900/30" />
+        <motion.div
           className="relative z-10 text-center px-4 space-y-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
             Intelligent
-            <span className="block mt-4 bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
+            <span className="block mt-4 bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
               Vending Solutions
             </span>
           </h1>
@@ -359,7 +641,7 @@ function HomePage() {
           </p>
           <div className="flex justify-center gap-4">
             <motion.button
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-500 text-white rounded-xl flex items-center gap-2 shadow-2xl hover:shadow-3xl transition-all"
+              className="px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl flex items-center gap-2 shadow-2xl hover:shadow-3xl transition-all"
               whileHover={{ scale: 1.05 }}
             >
               <FiPlay /> Watch Demo
@@ -378,8 +660,9 @@ function HomePage() {
       <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left side content */}
             <div className="space-y-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
                 Smart Retail Ecosystem
               </h2>
               <div className="grid grid-cols-2 gap-6">
@@ -391,7 +674,7 @@ function HomePage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <div className="text-blue-600 dark:text-purple-400 text-3xl mb-4 transition-colors">
+                    <div className="text-primary-600 dark:text-primary-400 text-3xl mb-4 transition-colors">
                       {feature.icon}
                     </div>
                     <h3 className="text-xl font-semibold mb-2 dark:text-white">{feature.title}</h3>
@@ -400,7 +683,8 @@ function HomePage() {
                 ))}
               </div>
             </div>
-            
+
+            {/* Right side image */}
             <div className="relative h-[600px] rounded-3xl overflow-hidden border-8 border-white dark:border-gray-800 shadow-2xl">
               <img
                 src="https://via.placeholder.com/800x600.png?text=Smart+Vending+Interface"
@@ -413,38 +697,64 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Interactive Chat Bubble */}
-      <motion.div
-        className="fixed bottom-6 right-6 z-50"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 2 }}
-      >
-        <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-4 w-72">
-          <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white p-3 rounded-full shadow-lg">
-            <FiShoppingCart className="text-xl" />
-          </div>
-          <div className="space-y-3">
-            <h3 className="font-semibold dark:text-white">Need help?</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Our AI assistant is here to help you choose the perfect solution
-            </p>
-            <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-              Start Chat
-            </button>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Modern Footer */}
+      {/* Footer */}
       <footer className="bg-gray-50 dark:bg-gray-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
-            {/* Footer content */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">GreenVend</h3>
+              <p className="text-sm">Innovating sustainable vending solutions through cutting-edge technology.</p>
+              <div className="flex items-center gap-2">
+                <FiMapPin className="text-primary-600" />
+                <span>123 Green Street, Eco City</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FiPhone className="text-primary-600" />
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FiMail className="text-primary-600" />
+                <span>info@greenvend.com</span>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Products</h3>
+              <ul className="space-y-2">
+                {['Smart Vending', 'Inventory System', 'Mobile App', 'Analytics'].map((item) => (
+                  <li key={item}>
+                    <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Company</h3>
+              <ul className="space-y-2">
+                {['About Us', 'Careers', 'Blog', 'Partners'].map((item) => (
+                  <li key={item}>
+                    <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Legal</h3>
+              <ul className="space-y-2">
+                {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'FAQs'].map((item) => (
+                  <li key={item}>
+                    <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+          
           <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
             <p className="text-gray-500 dark:text-gray-600">
-              © 2024 VendTech. All rights reserved.
+              © 2024 GreenVend. All rights reserved.
             </p>
           </div>
         </div>
@@ -452,4 +762,5 @@ function HomePage() {
     </div>
   );
 }
+
 export default HomePage;
