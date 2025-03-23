@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // 1) Import Firestore
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 
 // 2) Your existing Firebase config
 const firebaseConfig = {
@@ -21,3 +23,5 @@ const analytics = getAnalytics(app);
 
 // 3) Initialize Firestore and EXPORT it
 export const db = getFirestore(app);
+export const storage = getStorage(app);
+

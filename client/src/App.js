@@ -11,6 +11,11 @@ import ProductsPage from './pages/ProductsPage';
 import ContactPage from './pages/ContactPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
+import TechnologyPage from './pages/TechnologyPage';
+import SolutionsPage from './pages/SolutionsPage';
+import FAQPage from './pages/FAQPage';
+
+
 
 function App() {
   return (
@@ -22,8 +27,11 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/technology" element={<TechnologyPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/Solutions" element={<SolutionsPage />} />
+          <Route path="/faq" element={<FAQPage />} />
         </Routes>
       </Router>
     </HelmetProvider>
