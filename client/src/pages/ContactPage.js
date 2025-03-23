@@ -40,7 +40,8 @@ function ContactPage() {
     { name: 'Products', href: '/products' },
     { name: 'Solutions', href: '/solutions' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Contact', href: '/contact' },
+    { name: 'FAQ', href: '/FAQ' }
   ];
 
   // Handle form input

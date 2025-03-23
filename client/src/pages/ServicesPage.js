@@ -26,10 +26,13 @@ function ServicesPage() {
   );
 
   const navLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'Technology', href: '/technology' },
     { name: 'Products', href: '/products' },
     { name: 'Solutions', href: '/solutions' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Contact', href: '/contact' },
+    { name: 'FAQ', href: '/FAQ' }
   ];
 
   const services = [

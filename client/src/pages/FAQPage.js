@@ -13,8 +13,18 @@ import {
   FiMapPin,
   FiPhone,
   FiMail,
-  FiMenu
+  FiMenu,
+  FiSearch
 } from 'react-icons/fi';
+
+const FAQ_CATEGORIES = [
+  'General',
+  'Products',
+  'Orders',
+  'Delivery',
+  'Payment',
+  'Technical'
+];
 
 function FAQPage() {
   const [faqs, setFaqs] = useState([]);
@@ -24,6 +34,8 @@ function FAQPage() {
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -31,7 +43,8 @@ function FAQPage() {
     { name: 'Products', href: '/products' },
     { name: 'Solutions', href: '/solutions' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Contact', href: '/contact' },
+    { name: 'FAQ', href: '/FAQ' }
   ];
 
   useEffect(() => {
@@ -64,6 +77,13 @@ function FAQPage() {
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
+
+  const filteredFAQs = faqs.filter(faq => {
+    const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
@@ -174,38 +194,77 @@ function FAQPage() {
             </p>
           </motion.div>
 
+          {/* Search and Filter Controls */}
+          <div className="mb-12 grid md:grid-cols-2 gap-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search questions..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 border-none"
+              />
+              <FiSearch className="absolute left-4 top-4 text-xl text-gray-400 dark:text-gray-500" />
+            </div>
+            
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full px-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 border-none"
+            >
+              <option value="all">All Categories</option>
+              {FAQ_CATEGORIES.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* FAQ List */}
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={faq.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <button
-                  onClick={() => toggleFAQ(index)}
-                  className="w-full px-6 py-4 text-left flex justify-between items-center"
+            {filteredFAQs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 dark:text-gray-400 text-xl">
+                  No FAQs found matching your criteria
+                </p>
+              </div>
+            ) : (
+              filteredFAQs.map((faq, index) => (
+                <motion.div
+                  key={faq.id}
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
                 >
-                  <span className="text-xl font-medium text-gray-900 dark:text-white">
-                    {faq.question}
-                  </span>
-                  {activeIndex === index ? (
-                    <FiChevronUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                  ) : (
-                    <FiChevronDown className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="w-full px-6 py-4 text-left flex justify-between items-center"
+                  >
+                    <div className="flex flex-col items-start">
+                      <span className="text-xl font-medium text-gray-900 dark:text-white">
+                        {faq.question}
+                      </span>
+                      <span className="mt-1 text-sm px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200">
+                        {faq.category}
+                      </span>
+                    </div>
+                    {activeIndex === index ? (
+                      <FiChevronUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    ) : (
+                      <FiChevronDown className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    )}
+                  </button>
+                  
+                  {activeIndex === index && (
+                    <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
                   )}
-                </button>
-                
-                {activeIndex === index && (
-                  <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </section>
