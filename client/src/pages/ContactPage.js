@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 
 // 1) Firestore import
 import { collection, addDoc } from 'firebase/firestore';
@@ -21,6 +22,7 @@ import {
 } from 'react-icons/fi';
 
 function ContactPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -157,6 +159,7 @@ function ContactPage() {
               </motion.button>
 
               <motion.button
+                 onClick={() => navigate('/contact')}
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >

@@ -18,10 +18,12 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCreative } from 'swiper/modules';
+import { useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/effect-creative';
 
 function HomePage() {
+  const navigate = useNavigate();
   const [isDark, setIsDark] = useState(() =>
     localStorage.getItem('theme') === 'dark' ||
     window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -113,6 +115,7 @@ function HomePage() {
               </motion.button>
 
               <motion.button
+                onClick={() => navigate('/contact')}
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
@@ -145,6 +148,7 @@ function HomePage() {
                     )}
                   </button>
                   <button
+                    onClick={() => navigate('/contact')}
                     className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                   >
                     <FiShoppingCart /> Get Started
@@ -175,6 +179,7 @@ function HomePage() {
           </p>
           <div className="flex justify-center gap-4">
             <motion.button
+              onClick={() => navigate('/contact')}
               className="px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl flex items-center gap-2 shadow-2xl hover:shadow-3xl transition-all"
               whileHover={{ scale: 1.05 }}
             >
@@ -214,6 +219,7 @@ function HomePage() {
               </div>
             </div>
             <motion.button
+              onClick={() => navigate('/contact')}
               className="px-8 py-4 bg-white text-primary-600 rounded-xl shadow-2xl hover:shadow-3xl transition-all mx-auto mt-8"
               whileHover={{ scale: 1.05 }}
             >

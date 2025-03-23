@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 import { 
   FiCheck,
   FiMapPin,
@@ -20,6 +21,7 @@ import {
 } from 'react-icons/fi';
 
 function SolutionsPage() {
+  const navigate = useNavigate();
   const [isDark, setIsDark] = useState(() => 
     localStorage.getItem('theme') === 'dark' || 
     window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -97,6 +99,7 @@ function SolutionsPage() {
               </motion.button>
 
               <motion.button
+                            onClick={() => navigate('/contact')}
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
