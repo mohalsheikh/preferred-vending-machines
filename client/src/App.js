@@ -14,6 +14,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import TechnologyPage from './pages/TechnologyPage';
 import SolutionsPage from './pages/SolutionsPage';
 import FAQPage from './pages/FAQPage';
+import HomeEdit from './pages/HomeEdit';
 
 
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/Solutions" element={<SolutionsPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/admin/edit-home" element={<HomeEdit />} />
         </Routes>
       </Router>
     </HelmetProvider>

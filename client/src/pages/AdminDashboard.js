@@ -86,6 +86,7 @@ function AdminDashboard() {
     { name: 'Solutions', href: '/solutions' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
+    { name: 'EditHome', href: '/admin/edit-home' },
     { name: 'FAQ', href: '/FAQ' }
   ];
 
