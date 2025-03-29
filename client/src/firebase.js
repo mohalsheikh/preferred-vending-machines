@@ -1,7 +1,6 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-// 1) Import Firestore
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 

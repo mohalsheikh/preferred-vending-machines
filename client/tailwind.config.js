@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -5,16 +6,16 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+          50: 'rgb(var(--color-primary-50) / <alpha-value>)',
+          100: 'rgb(var(--color-primary-100) / <alpha-value>)',
+          200: 'rgb(var(--color-primary-200) / <alpha-value>)',
+          300: 'rgb(var(--color-primary-300) / <alpha-value>)',
+          400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-primary-500, 34 197 94) / <alpha-value>)',
+          600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+          700: 'rgb(var(--color-primary-700) / <alpha-value>)',
+          800: 'rgb(var(--color-primary-800) / <alpha-value>)',
+          900: 'rgb(var(--color-primary-900) / <alpha-value>)',
         },
         blue: {
           50: '#f0f9ff',
@@ -28,7 +29,7 @@ module.exports = {
         gray: {
           800: '#1f2937',
           900: '#111827',
-        }
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system'],
@@ -37,13 +38,13 @@ module.exports = {
         '3d': '0 8px 32px -4px rgba(0, 0, 0, 0.1)',
         'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
         'neumorphic': '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5)',
-        'dark-neumorphic': '8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.05)'
+        'dark-neumorphic': '8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.05)',
       },
       animation: {
         'gradient': 'gradient 5s ease infinite',
         'float': 'float 6s ease-in-out infinite',
         'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'bounce-slow': 'bounce 3s infinite'
+        'bounce-slow': 'bounce 3s infinite',
       },
       keyframes: {
         gradient: {
@@ -57,13 +58,13 @@ module.exports = {
         pulse: {
           '0%, 100%': { opacity: 1 },
           '50%': { opacity: 0.5 },
-        }
+        },
       },
       backgroundImage: {
         'gradient-text': 'linear-gradient(to right, #4ade80, #3b82f6)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(var(--tw-gradient-stops))',
-        'gradient-glass': 'linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))'
+        'gradient-glass': 'linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
       },
       backdropBlur: {
         xs: '2px',
@@ -97,7 +98,7 @@ module.exports = {
             '-webkit-mask': 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
             '-webkit-mask-composite': 'xor',
             'mask-composite': 'exclude',
-          }
+          },
         },
         '.custom-cursor': {
           cursor: 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'8\' fill=\'%234ade80\' /></svg>"), auto',
@@ -113,13 +114,13 @@ module.exports = {
           background: 'rgba(255, 255, 255, 0.1)',
           'backdrop-filter': 'blur(10px)',
           '-webkit-backdrop-filter': 'blur(10px)',
-          'border': '1px solid rgba(255, 255, 255, 0.18)',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
         },
         '.dark-glass-effect': {
           background: 'rgba(0, 0, 0, 0.1)',
           'backdrop-filter': 'blur(10px)',
           '-webkit-backdrop-filter': 'blur(10px)',
-          'border': '1px solid rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
         },
         '.text-shadow': {
           'text-shadow': '2px 2px 4px rgba(0, 0, 0, 0.1)',
