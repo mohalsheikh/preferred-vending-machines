@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -16,11 +17,11 @@ import FAQPage from './pages/FAQPage';
 import HomeEdit from './pages/HomeEdit';
 import SiteSettings from './pages/SiteSettings';
 
-// ✅ Import the site settings hook
+// Our custom hook that loads theme from Firestore on startup
 import { useSiteSettings } from './hooks/useSiteSettings';
 
 function App() {
-  useSiteSettings(); // ✅ Apply theme globally
+  useSiteSettings(); // <— This will fetch & apply the theme once at app start
 
   return (
     <HelmetProvider>
@@ -44,5 +45,4 @@ function App() {
   );
 }
 
-// ✅ Make sure this line is at the bottom and not inside anything
 export default App;

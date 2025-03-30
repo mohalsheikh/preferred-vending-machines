@@ -6,17 +6,36 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: 'rgb(var(--color-primary-50) / <alpha-value>)',
-          100: 'rgb(var(--color-primary-100) / <alpha-value>)',
-          200: 'rgb(var(--color-primary-200) / <alpha-value>)',
-          300: 'rgb(var(--color-primary-300) / <alpha-value>)',
-          400: 'rgb(var(--color-primary-400) / <alpha-value>)',
-          500: 'rgb(var(--color-primary-500, 34 197 94) / <alpha-value>)',
-          600: 'rgb(var(--color-primary-600) / <alpha-value>)',
-          700: 'rgb(var(--color-primary-700) / <alpha-value>)',
-          800: 'rgb(var(--color-primary-800) / <alpha-value>)',
-          900: 'rgb(var(--color-primary-900) / <alpha-value>)',
+          500: 'var(--primary-500, #22c55e)',
+          600: 'var(--primary-600, #16a34a)',
+          700: 'var(--primary-700, #15803d)',
         },
+        secondary: {
+          500: 'var(--secondary-500, #3b82f6)',
+          600: 'var(--secondary-600, #2563eb)',
+        },
+        accent: {
+          500: 'var(--accent-500, #8b5cf6)',
+        },
+        dark: {
+          800: 'var(--dark-800, #1f2937)',
+          900: 'var(--dark-900, #111827)',
+        },
+        /**
+         * NEW: gray group that references your SiteSettings
+         * so "text-gray-600", "bg-gray-50", etc. become editable.
+         */
+        gray: {
+          50: 'var(--gray-50, #F9FAFB)',
+          100: 'var(--gray-100, #F3F4F6)',
+          200: 'var(--gray-200, #E5E7EB)',
+          300: 'var(--gray-300, #D1D5DB)',
+          600: 'var(--gray-600, #4B5563)',
+          700: 'var(--gray-700, #374151)',
+          800: 'var(--gray-800, #1F2937)',
+          900: 'var(--gray-900, #111827)',
+        },
+        // You can keep or remove these if you have other static colors:
         blue: {
           50: '#f0f9ff',
           100: '#e0f2fe',
@@ -26,30 +45,28 @@ module.exports = {
         purple: {
           500: '#8b5cf6',
         },
-        gray: {
-          800: '#1f2937',
-          900: '#111827',
-        },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system'],
+        sans: ['var(--font-family)', 'Inter', 'system-ui', '-apple-system'],
       },
       boxShadow: {
         '3d': '0 8px 32px -4px rgba(0, 0, 0, 0.1)',
-        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-        'neumorphic': '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5)',
-        'dark-neumorphic': '8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.05)',
+        glass: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        neumorphic:
+          '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5)',
+        'dark-neumorphic':
+          '8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.05)',
       },
       animation: {
-        'gradient': 'gradient 5s ease infinite',
-        'float': 'float 6s ease-in-out infinite',
+        gradient: 'gradient 5s ease infinite',
+        float: 'float 6s ease-in-out infinite',
         'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'bounce-slow': 'bounce 3s infinite',
       },
       keyframes: {
         gradient: {
-          '0%, 100%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
@@ -64,14 +81,15 @@ module.exports = {
         'gradient-text': 'linear-gradient(to right, #4ade80, #3b82f6)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(var(--tw-gradient-stops))',
-        'gradient-glass': 'linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+        'gradient-glass':
+          'linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
       },
       backdropBlur: {
         xs: '2px',
       },
       transitionProperty: {
-        'height': 'height',
-        'spacing': 'margin, padding',
+        height: 'height',
+        spacing: 'margin, padding',
       },
     },
   },
@@ -95,13 +113,15 @@ module.exports = {
             padding: '2px',
             borderRadius: 'inherit',
             background: 'linear-gradient(45deg, #4ade80, #3b82f6)',
-            '-webkit-mask': 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            '-webkit-mask':
+              'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
             '-webkit-mask-composite': 'xor',
-            'mask-composite': 'exclude',
+            maskComposite: 'exclude',
           },
         },
         '.custom-cursor': {
-          cursor: 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'8\' fill=\'%234ade80\' /></svg>"), auto',
+          cursor:
+            'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'><circle cx=\'16\' cy=\'16\' r=\'8\' fill=\'%234ade80\' /></svg>"), auto',
         },
         '.scrollbar-hide': {
           'scrollbar-width': 'none',
@@ -112,21 +132,21 @@ module.exports = {
         },
         '.glass-effect': {
           background: 'rgba(255, 255, 255, 0.1)',
-          'backdrop-filter': 'blur(10px)',
-          '-webkit-backdrop-filter': 'blur(10px)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.18)',
         },
         '.dark-glass-effect': {
           background: 'rgba(0, 0, 0, 0.1)',
-          'backdrop-filter': 'blur(10px)',
-          '-webkit-backdrop-filter': 'blur(10px)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.05)',
         },
         '.text-shadow': {
-          'text-shadow': '2px 2px 4px rgba(0, 0, 0, 0.1)',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)',
         },
         '.text-shadow-dark': {
-          'text-shadow': '2px 2px 4px rgba(0, 0, 0, 0.5)',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
         },
       };
       addUtilities(newUtilities, ['responsive', 'hover', 'dark']);
