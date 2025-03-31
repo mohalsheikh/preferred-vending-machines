@@ -210,7 +210,7 @@ function ContactPage() {
       <section className="pt-32 pb-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6"
+            className="text-heading font-bold text-gray-900 dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >

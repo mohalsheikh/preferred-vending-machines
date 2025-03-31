@@ -2,8 +2,13 @@
 module.exports = {
   darkMode: 'class',
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+
   theme: {
     extend: {
+      /* 
+         1) Use var(--primary-500) etc. so your site reads from
+            the color variables set by SiteSettings or default in index.css.
+      */
       colors: {
         primary: {
           500: 'var(--primary-500, #22c55e)',
@@ -21,10 +26,6 @@ module.exports = {
           800: 'var(--dark-800, #1f2937)',
           900: 'var(--dark-900, #111827)',
         },
-        /**
-         * NEW: gray group that references your SiteSettings
-         * so "text-gray-600", "bg-gray-50", etc. become editable.
-         */
         gray: {
           50: 'var(--gray-50, #F9FAFB)',
           100: 'var(--gray-100, #F3F4F6)',
@@ -35,28 +36,48 @@ module.exports = {
           800: 'var(--gray-800, #1F2937)',
           900: 'var(--gray-900, #111827)',
         },
-        // You can keep or remove these if you have other static colors:
-        blue: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#3b82f6',
-          600: '#2563eb',
-        },
-        purple: {
-          500: '#8b5cf6',
-        },
       },
+
+      /* 
+         2) Let Tailwind "font-sans" read var(--font-family).
+         So className="font-sans" = user-chosen font from SiteSettings.
+      */
       fontFamily: {
         sans: ['var(--font-family)', 'Inter', 'system-ui', '-apple-system'],
       },
+
+      /* 
+         3) Custom font sizes referencing your user-chosen variables.
+         text-heading => var(--heading-size)
+         text-basevar => var(--base-size)
+      */
+      fontSize: {
+        basevar: 'var(--base-size)',
+        heading: 'var(--heading-size)',
+      },
+
+      /*
+         4) Custom shadow classes referencing your user-chosen variables.
+         shadow-button => var(--button-shadow)
+         shadow-card => var(--card-shadow)
+      */
       boxShadow: {
+        button: 'var(--button-shadow, 0 8px 32px -4px rgba(0,0,0,0.1))',
+        card: 'var(--card-shadow, 8px 8px 16px rgba(0,0,0,0.1), -8px -8px 16px rgba(255,255,255,0.5))',
+
+        // Additional named shadows if desired
         '3d': '0 8px 32px -4px rgba(0, 0, 0, 0.1)',
         glass: '0 4px 30px rgba(0, 0, 0, 0.1)',
         neumorphic:
-          '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5)',
+          '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255,255,255,0.5)',
         'dark-neumorphic':
           '8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.05)',
       },
+
+      /* 
+         5) Other animations, keyframes, background images, etc.
+         No change needed unless you want to remove or modify them.
+      */
       animation: {
         gradient: 'gradient 5s ease infinite',
         float: 'float 6s ease-in-out infinite',
@@ -93,10 +114,13 @@ module.exports = {
       },
     },
   },
+
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
+
+    // Additional custom utilities (gradient-text, etc.)
     function ({ addUtilities }) {
       const newUtilities = {
         '.gradient-text': {
@@ -149,6 +173,7 @@ module.exports = {
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
         },
       };
+
       addUtilities(newUtilities, ['responsive', 'hover', 'dark']);
     },
   ],

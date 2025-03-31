@@ -426,10 +426,25 @@ import { useNavigate } from 'react-router-dom';
 import { useContent } from '../hooks/useContent';
 import 'swiper/css';
 import 'swiper/css/effect-creative';
+// In your main pages (e.g., HomePage, ProductsPage)
+import { collection, addDoc } from 'firebase/firestore';
+
 
 function HomePage() {
   const navigate = useNavigate();
   const { content, loading } = useContent('homePage');
+
+  useEffect(() => {
+    const logVisit = async () => {
+      await addDoc(collection(db, 'visitors'), {
+        timestamp: new Date(),
+        page: window.location.pathname,
+        userAgent: navigator.userAgent,
+      });
+    };
+    logVisit();
+  }, []);
+  
 
   const [isDark, setIsDark] = useState(() =>
     localStorage.getItem('theme') === 'dark' ||
@@ -449,6 +464,16 @@ function HomePage() {
       localStorage.setItem('theme', 'light');
     }
   }, [isDark]);
+
+  const [imageDimensions, setImageDimensions] = useState({
+    width: 800,  // Default placeholder width
+    height: 600  // Default placeholder height
+  });
+  
+  const handleImageLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    setImageDimensions({ width: naturalWidth, height: naturalHeight });
+  };
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -587,7 +612,7 @@ function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
+          <h1 className="text-heading font-bold text-gray-900 dark:text-white">
             {content?.hero?.title || 'Preferred'}
             <span className="block mt-4 bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
               {content?.hero?.highlightedTitle || 'Vending Solutions'}
@@ -617,7 +642,7 @@ function HomePage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
           >
-            <h2 className="text-4xl md:text-6xl font-bold">
+            <h2 className="text-heading font-bold">
               {content?.freeVending?.title || 'FREE Vending Machines'}
               <span className="block mt-4">
                 {content?.freeVending?.subtitle ||
@@ -654,53 +679,59 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-                {content?.technology?.title || 'Smart Choices Technology'}
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300">
-                {content?.technology?.subtitle ||
-                  'State-of-the-art vending solutions featuring:'}
-              </p>
-              <div className="grid grid-cols-2 gap-6">
-                {content?.technology?.features?.map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all"
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="text-primary-600 dark:text-primary-400 text-3xl mb-4">
-                      {feature.icon === 'FiZap' && <FiZap />}
-                      {feature.icon === 'FiShoppingCart' && <FiShoppingCart />}
-                      {feature.icon === 'FiStar' && <FiStar />}
-                      {feature.icon === 'FiSettings' && <FiSettings />}
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2 dark:text-white">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      {feature.text}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative h-[600px] rounded-3xl overflow-hidden border-8 border-white dark:border-gray-800 shadow-2xl">
-              <img
-                src={content?.technology?.imageURL || 'https://via.placeholder.com/800x600.png?text=Smart+Vending+Interface'}
-                alt="Smart Vending Technology"
-                className="w-full h-full object-cover"
-              />
+    <section className="py-24 bg-white dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+              {content?.technology?.title || 'Smart Choices Technology'}
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">
+              {content?.technology?.subtitle ||
+                'State-of-the-art vending solutions featuring:'}
+            </p>
+            <div className="grid grid-cols-2 gap-6">
+              {content?.technology?.features?.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="text-primary-600 dark:text-primary-400 text-3xl mb-4">
+                    {feature.icon === 'FiZap' && <FiZap />}
+                    {feature.icon === 'FiShoppingCart' && <FiShoppingCart />}
+                    {feature.icon === 'FiStar' && <FiStar />}
+                    {feature.icon === 'FiSettings' && <FiSettings />}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {feature.text}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
+
+          <div 
+            className="relative rounded-3xl overflow-hidden border-8 border-white dark:border-gray-800 shadow-2xl"
+            style={{
+              paddingBottom: `${(imageDimensions.height / imageDimensions.width) * 100}%`
+            }}
+          >
+            <img
+              src={content?.technology?.imageURL || 'https://via.placeholder.com/800x600.png?text=Smart+Vending+Interface'}
+              alt="Smart Vending Technology"
+              className="absolute w-full h-full object-cover"
+              onLoad={handleImageLoad}
+            />
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       <footer className=" 
        bg-gray-50 

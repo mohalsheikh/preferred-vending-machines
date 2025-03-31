@@ -1,6 +1,5 @@
-// src/pages/FAQPage.js
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -8,14 +7,15 @@ import { db } from '../firebase';
 import { 
   FiChevronDown, 
   FiChevronUp,
-  FiShoppingCart,
+  FiSearch,
+  FiX,
+  FiShoppingCart, 
   FiMoon, 
   FiSun,
   FiMapPin,
   FiPhone,
   FiMail,
   FiMenu,
-  FiSearch
 } from 'react-icons/fi';
 
 const FAQ_CATEGORIES = [
@@ -31,13 +31,12 @@ function FAQPage() {
   const navigate = useNavigate();
   const [faqs, setFaqs] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
-  const [isDark, setIsDark] = useState(() => 
-    localStorage.getItem('theme') === 'dark' || 
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isDark, setIsDark] = useState(false); // <-- added
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <-- moved inside component
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -49,6 +48,33 @@ function FAQPage() {
     { name: 'FAQ', href: '/FAQ' }
   ];
 
+// Handle dark mode toggle
+useEffect(() => {
+  const storedTheme = localStorage.getItem('theme');
+  if (storedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+    setIsDark(true);
+  } else {
+    document.documentElement.classList.remove('dark');
+    setIsDark(false);
+  }
+}, []);
+
+const toggleDarkMode = () => {
+  setIsDark((prev) => {
+    const newMode = !prev;
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+    return newMode;
+  });
+};
+
+
   useEffect(() => {
     const loadFAQs = async () => {
       try {
@@ -59,25 +85,26 @@ function FAQPage() {
           ...doc.data()
         }));
         setFaqs(loadedFAQs);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error loading FAQs:', error);
+        setError('Failed to load FAQs. Please try again later.');
+        setIsLoading(false);
       }
     };
     loadFAQs();
   }, []);
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const highlightText = (text) => {
+    if (!searchQuery) return text;
+    const regex = new RegExp(`(${searchQuery})`, 'gi');
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? <mark key={i} className="bg-primary-100 dark:bg-primary-900">{part}</mark> : part
+    );
   };
 
   const filteredFAQs = faqs.filter(faq => {
@@ -128,7 +155,7 @@ function FAQPage() {
 
             <div className="hidden md:flex items-center gap-4">
               <motion.button
-                onClick={() => setIsDark(!isDark)}
+                onClick={toggleDarkMode}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 whileHover={{ rotate: 15 }}
               >
@@ -140,7 +167,7 @@ function FAQPage() {
               </motion.button>
 
               <motion.button
-                 onClick={() => navigate('/contact')}
+                onClick={() => navigate('/contact')}
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
@@ -184,102 +211,173 @@ function FAQPage() {
         </div>
       </motion.nav>
 
-      <section className="pt-32 pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Hero Section */}
           <motion.div 
-            className="text-center mb-16"
+            className="text-center mb-16 space-y-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
           >
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
               Frequently Asked Questions
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Find answers to common questions about our services and technology
+              Quick answers to common questions about our services and technology
             </p>
           </motion.div>
 
-          {/* Search and Filter Controls */}
-          <div className="mb-12 grid md:grid-cols-2 gap-4">
+          {/* Search and Filters */}
+          <motion.div 
+            className="mb-12 space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search questions..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 border-none"
+                className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 border-none text-lg"
               />
               <FiSearch className="absolute left-4 top-4 text-xl text-gray-400 dark:text-gray-500" />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <FiX className="text-xl" />
+                </button>
+              )}
             </div>
-            
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 border-none"
-            >
-              <option value="all">All Categories</option>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`px-4 py-2 rounded-full ${
+                  selectedCategory === 'all'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                All
+              </button>
               {FAQ_CATEGORIES.map(category => (
-                <option key={category} value={category}>{category}</option>
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full ${
+                    selectedCategory === category
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {category}
+                </button>
               ))}
-            </select>
-          </div>
+            </div>
+          </motion.div>
 
           {/* FAQ List */}
-          <div className="space-y-4">
-            {filteredFAQs.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-600 dark:text-gray-400 text-xl">
-                  No FAQs found matching your criteria
-                </p>
-              </div>
-            ) : (
-              filteredFAQs.map((faq, index) => (
-                <motion.div
-                  key={faq.id}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+          {isLoading ? (
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-20 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse" />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 space-y-4">
+              <div className="text-red-500 text-xl">{error}</div>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredFAQs.length === 0 ? (
+                <motion.div 
+                  className="text-center py-12 space-y-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                 >
+                  <div className="text-6xl">😕</div>
+                  <p className="text-xl text-gray-600 dark:text-gray-400">
+                    No results found for "{searchQuery}"
+                  </p>
                   <button
-                    onClick={() => toggleFAQ(index)}
-                    className="w-full px-6 py-4 text-left flex justify-between items-center"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedCategory('all');
+                    }}
+                    className="text-primary-600 dark:text-primary-400 hover:underline"
                   >
-                    <div className="flex flex-col items-start">
-                      <span className="text-xl font-medium text-gray-900 dark:text-white">
-                        {faq.question}
-                      </span>
-                      <span className="mt-1 text-sm px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200">
-                        {faq.category}
-                      </span>
-                    </div>
-                    {activeIndex === index ? (
-                      <FiChevronUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                    ) : (
-                      <FiChevronDown className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                    )}
+                    Clear filters
                   </button>
-                  
-                  {activeIndex === index && (
-                    <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
                 </motion.div>
-              ))
-            )}
-          </div>
+              ) : (
+                filteredFAQs.map((faq, index) => (
+                  <motion.div
+                    key={faq.id}
+                    className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <button
+                      onClick={() => toggleFAQ(index)}
+                      className="w-full px-6 py-4 text-left flex justify-between items-center"
+                    >
+                      <div className="space-y-2 text-left">
+                        <div className="text-lg font-medium text-gray-900 dark:text-white">
+                          {highlightText(faq.question)}
+                        </div>
+                        <div className="text-sm text-primary-600 dark:text-primary-400">
+                          {faq.category}
+                        </div>
+                      </div>
+                      {activeIndex === index ? (
+                        <FiChevronUp className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                      ) : (
+                        <FiChevronDown className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                      )}
+                    </button>
+
+                    <AnimatePresence>
+                      {activeIndex === index && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
+                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                              {highlightText(faq.answer)}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          )}
         </div>
-      </section>
+      </main>
 
       {/* Footer */}
       <footer className="
            bg-gray-50 
            dark:bg-gray-900
-           border-t border-gray-200 dark:border-gray-800">        
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+           border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Preferred Vending</h3>
