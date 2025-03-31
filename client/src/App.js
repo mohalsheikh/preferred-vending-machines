@@ -21,6 +21,8 @@ import AdminFAQs from './pages/admin/FAQs';
 import AdminMessages from './pages/admin/Messages';
 import HomeEdit from './pages/admin/HomeEdit';
 import SiteSettings from './pages/admin/Settings';
+import TechnologyEdit from './pages/admin/TechnologyEdit';
+
 
 // Our custom hook that loads theme from Firestore on startup
 import { useSiteSettings } from './hooks/useSiteSettings';
@@ -52,6 +54,8 @@ function App() {
             <Route path="/admin/messages" element={<AdminMessages />} />
             <Route path="/admin/edit-home" element={<HomeEdit />} />
             <Route path="/admin/site-settings" element={<SiteSettings />} />
+            <Route path="/admin/technology" element={<TechnologyEdit />} />
+
           
           {/* Admin Authentication */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
