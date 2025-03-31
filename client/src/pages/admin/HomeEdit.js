@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { FiSave, FiImage, FiUpload, FiX, FiZap, FiShoppingCart, FiStar, FiSettings } from 'react-icons/fi';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { FiSave, FiImage, FiX, FiZap, FiShoppingCart, FiStar, FiSettings } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -65,9 +65,11 @@ const HomeEdit = () => {
       copyright: "© 2024 Preferred Vending. All rights reserved."
     }
   });
+
   const [activeSection, setActiveSection] = useState('hero');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [tempPreview, setTempPreview] = useState(null);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -127,12 +129,27 @@ const HomeEdit = () => {
 
   const handleImageUpload = async (file, fieldPath) => {
     if (!file) return;
-    
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file (JPEG, PNG, etc.)');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
     try {
+      // Show temporary preview
+      const reader = new FileReader();
+      reader.onload = () => setTempPreview(reader.result);
+      reader.readAsDataURL(file);
+
       const storageRef = ref(storage, `homepage/${Date.now()}_${file.name}`);
-      const uploadTask = uploadBytes(storageRef, file);
-      
-      uploadTask.on('state_changed', 
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on('state_changed',
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setUploadProgress(progress);
@@ -140,6 +157,8 @@ const HomeEdit = () => {
         (error) => {
           console.error("Upload error:", error);
           toast.error('Image upload failed');
+          setUploadProgress(0);
+          setTempPreview(null);
         },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
@@ -148,12 +167,15 @@ const HomeEdit = () => {
             [fieldPath]: { ...prev[fieldPath], imageURL: downloadURL }
           }));
           setUploadProgress(0);
+          setTempPreview(null);
           toast.success('Image uploaded successfully!');
         }
       );
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error('Image upload failed');
+      setUploadProgress(0);
+      setTempPreview(null);
     }
   };
 
@@ -180,7 +202,6 @@ const HomeEdit = () => {
         </div>
 
         <div className="p-6">
-          {/* Navigation */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-8">
             {SECTIONS.map((section) => (
               <button
@@ -197,7 +218,6 @@ const HomeEdit = () => {
             ))}
           </div>
 
-          {/* Hero Section */}
           {activeSection === 'hero' && (
             <SectionEditor title="Hero Content" preview={
               <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg mt-4">
@@ -237,7 +257,6 @@ const HomeEdit = () => {
             </SectionEditor>
           )}
 
-          {/* Free Vending Section */}
           {activeSection === 'freeVending' && (
             <SectionEditor title="Free Vending Content">
               <TextField 
@@ -292,7 +311,6 @@ const HomeEdit = () => {
             </SectionEditor>
           )}
 
-          {/* Technology Section */}
           {activeSection === 'technology' && (
             <SectionEditor title="Technology Content">
               <div className="space-y-6">
@@ -311,7 +329,10 @@ const HomeEdit = () => {
                             browse files
                             <input
                               type="file"
-                              onChange={(e) => handleImageUpload(e.target.files[0], 'technology')}
+                              onChange={(e) => {
+                                handleImageUpload(e.target.files[0], 'technology');
+                                e.target.value = '';
+                              }}
                               className="hidden"
                             />
                           </label>
@@ -335,11 +356,11 @@ const HomeEdit = () => {
                     )}
                   </div>
 
-                  {content.technology?.imageURL && (
+                  {(tempPreview || content.technology?.imageURL) && (
                     <div className="mt-4">
                       <p className="text-sm text-gray-500 mb-2">Preview:</p>
                       <img 
-                        src={content.technology.imageURL} 
+                        src={tempPreview || content.technology.imageURL} 
                         alt="Technology Preview" 
                         className="w-full h-48 object-cover rounded-lg border dark:border-gray-600"
                       />
@@ -389,7 +410,6 @@ const HomeEdit = () => {
             </SectionEditor>
           )}
 
-          {/* Footer Section */}
           {activeSection === 'footer' && (
             <SectionEditor title="Footer Content">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
