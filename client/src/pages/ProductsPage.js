@@ -1,9 +1,8 @@
-// src/pages/ProductsPage.js
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { 
   FiShoppingCart, 
@@ -28,6 +27,19 @@ function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [heroContent, setHeroContent] = useState({
+    title: 'Our Healthy Selection',
+    subtitle: 'Snacks & Beverages',
+    description: '"When it comes to healthy options, our machines can\'t be beat! We have a large selection of products to choose from."'
+  });
+  const [wellnessContent, setWellnessContent] = useState({
+    title: "Health First, Always",
+    adaTitle: "ADA Compliant Machines",
+    adaDescription: "All machines meet ADA compliance standards, ensuring accessibility for everyone.",
+    wellnessTitle: "Wellness-Focused Solutions",
+    wellnessDescription: "Enhance your wellness programs with our curated selection of better-for-you options that keep employees, students, and visitors happy and healthy.",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/1995/1995450.png"
+  });
 
   const filterOptions = [
     { value: 'all', label: 'All Products' },
@@ -101,6 +113,23 @@ function ProductsPage() {
   }, []);
 
   useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const docRef = doc(db, 'content', 'productsPage');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.hero) setHeroContent(data.hero);
+          if (data.wellness) setWellnessContent(data.wellness);
+        }
+      } catch (error) {
+        console.error('Error loading content:', error);
+      }
+    };
+    fetchContent();
+  }, []);
+
+  useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -140,9 +169,7 @@ function ProductsPage() {
       </Helmet>
 
       {/* Navigation */}
-      <motion.nav className="bg-gray-50 
-       dark:bg-gray-900
-       border-t border-gray-200 dark:border-gray-800">
+      <motion.nav className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
@@ -237,13 +264,13 @@ function ProductsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Our Healthy Selection
+            {heroContent.title}
             <span className="block mt-4 bg-gradient-to-r from-primary-600 to-green-500 bg-clip-text text-transparent">
-                Snacks & Beverages
+              {heroContent.subtitle}
             </span>
           </motion.h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-            "When it comes to healthy options, our machines can't be beat! We have a large selection of products to choose from."
+            {heroContent.description}
           </p>
         </div>
       </section>
@@ -276,7 +303,7 @@ function ProductsPage() {
               
               <div className="relative z-10 aspect-square bg-primary-500/10 dark:bg-primary-900/20 rounded-2xl overflow-hidden">
                 <img 
-                  src="https://cdn-icons-png.flaticon.com/512/1995/1995450.png" 
+                  src={wellnessContent.imageUrl} 
                   alt="Wellness illustration"
                   className="w-full h-full object-contain p-8"
                 />
@@ -300,7 +327,7 @@ function ProductsPage() {
                 
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                   <span className="bg-gradient-to-r from-primary-600 to-green-500 bg-clip-text text-transparent">
-                    Health First, Always
+                    {wellnessContent.title}
                   </span>
                 </h2>
               </motion.div>
@@ -317,11 +344,11 @@ function ProductsPage() {
                       <FiCheckCircle className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                     </div>
                     <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-                      ADA Compliant Machines
+                      {wellnessContent.adaTitle}
                     </p>
                   </div>
                   <p className="text-lg text-gray-600 dark:text-gray-300 pl-14">
-                    "All machines meet ADA compliance standards, ensuring accessibility for everyone."
+                    {wellnessContent.adaDescription}
                   </p>
                 </div>
 
@@ -331,11 +358,11 @@ function ProductsPage() {
                       <FiHeart className="w-8 h-8 text-green-600 dark:text-green-400" />
                     </div>
                     <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-                      Wellness-Focused Solutions
+                      {wellnessContent.wellnessTitle}
                     </p>
                   </div>
                   <p className="text-lg text-gray-600 dark:text-gray-300 pl-14">
-                    "Enhance your wellness programs with our curated selection of better-for-you options that keep employees, students, and visitors happy and healthy."
+                    {wellnessContent.wellnessDescription}
                   </p>
                 </div>
               </motion.div>
@@ -343,6 +370,7 @@ function ProductsPage() {
           </motion.div>
         </div>
       </section>
+  
 
       {/* Product Section */}
       <section className="py-12 bg-white dark:bg-gray-900">

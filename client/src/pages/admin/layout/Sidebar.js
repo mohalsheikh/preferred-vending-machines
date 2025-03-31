@@ -9,7 +9,8 @@ import {
   FiHelpCircle,
   FiMessageSquare,
   FiHome,
-  FiSettings
+  FiSettings,
+  FiTool
 } from 'react-icons/fi';
 
 const adminNavLinks = [
@@ -18,7 +19,9 @@ const adminNavLinks = [
   { name: 'FAQs', href: '/admin/faqs', icon: <FiHelpCircle /> },
   { name: 'Messages', href: '/admin/messages', icon: <FiMessageSquare /> },
   { name: 'Edit Homepage', href: '/admin/edit-home', icon: <FiHome /> },
-  { name: 'Settings', href: '/admin/settings', icon: <FiSettings /> }
+  { name: 'Technology Page Edit', href: '/admin/technology', icon: <FiTool /> },
+  { name: 'Settings', href: '/admin/settings', icon: <FiSettings /> },
+
 ];
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
