@@ -10,8 +10,9 @@ import {
   FiMessageSquare,
   FiHome,
   FiSettings,
-  FiTool
+  FiTool,
 } from 'react-icons/fi';
+import { FaLightbulb } from 'react-icons/fa';
 
 const adminNavLinks = [
   { name: 'Dashboard', href: '/admin', icon: <FiGrid /> },
@@ -20,6 +21,7 @@ const adminNavLinks = [
   { name: 'Messages', href: '/admin/messages', icon: <FiMessageSquare /> },
   { name: 'Edit Homepage', href: '/admin/edit-home', icon: <FiHome /> },
   { name: 'Technology Page Edit', href: '/admin/technology', icon: <FiTool /> },
+  { name: 'Solutions Page Edit', href: '/admin/solutions', icon: <FaLightbulb /> },
   { name: 'Settings', href: '/admin/settings', icon: <FiSettings /> },
 
 ];
