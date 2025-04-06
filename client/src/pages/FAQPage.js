@@ -18,25 +18,17 @@ import {
   FiMenu,
 } from 'react-icons/fi';
 
-const FAQ_CATEGORIES = [
-  'General',
-  'Products',
-  'Orders',
-  'Delivery',
-  'Payment',
-  'Technical'
-];
-
 function FAQPage() {
   const navigate = useNavigate();
   const [faqs, setFaqs] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isDark, setIsDark] = useState(false); // <-- added
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <-- moved inside component
+  const [isDark, setIsDark] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -48,52 +40,63 @@ function FAQPage() {
     { name: 'FAQ', href: '/FAQ' }
   ];
 
-// Handle dark mode toggle
-useEffect(() => {
-  const storedTheme = localStorage.getItem('theme');
-  if (storedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-    setIsDark(true);
-  } else {
-    document.documentElement.classList.remove('dark');
-    setIsDark(false);
-  }
-}, []);
-
-const toggleDarkMode = () => {
-  setIsDark((prev) => {
-    const newMode = !prev;
-    if (newMode) {
+  // Handle dark mode toggle
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+      setIsDark(false);
     }
-    return newMode;
-  });
-};
+  }, []);
 
+  const toggleDarkMode = () => {
+    setIsDark((prev) => {
+      const newMode = !prev;
+      if (newMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+      return newMode;
+    });
+  };
 
   useEffect(() => {
-    const loadFAQs = async () => {
+    const loadData = async () => {
       try {
-        const q = query(collection(db, 'faqs'), orderBy('order'));
-        const snapshot = await getDocs(q);
-        const loadedFAQs = snapshot.docs.map(doc => ({
+        setIsLoading(true);
+        const [faqsSnapshot, categoriesSnapshot] = await Promise.all([
+          getDocs(query(collection(db, 'faqs'), orderBy('order'))),
+          getDocs(collection(db, 'faqCategories'))
+        ]);
+  
+        const loadedFAQs = faqsSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
+  
+        const loadedCategories = categoriesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().name
+        }));
+  
         setFaqs(loadedFAQs);
+        setCategories(loadedCategories);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error loading FAQs:', error);
+        console.error('Error loading data:', error);
         setError('Failed to load FAQs. Please try again later.');
         setIsLoading(false);
       }
     };
-    loadFAQs();
+    loadData();
   }, []);
+  
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -122,9 +125,7 @@ const toggleDarkMode = () => {
       </Helmet>
 
       {/* Navigation */}
-      <motion.nav className="bg-gray-50 
-       dark:bg-gray-900
-       border-t border-gray-200 dark:border-gray-800">
+      <motion.nav className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
@@ -265,17 +266,17 @@ const toggleDarkMode = () => {
               >
                 All
               </button>
-              {FAQ_CATEGORIES.map(category => (
+              {categories.map(category => (
                 <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.name)}
                   className={`px-4 py-2 rounded-full ${
-                    selectedCategory === category
+                    selectedCategory === category.name
                       ? 'bg-primary-600 text-white'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
-                  {category}
+                  {category.name}
                 </button>
               ))}
             </div>
@@ -373,10 +374,7 @@ const toggleDarkMode = () => {
       </main>
 
       {/* Footer */}
-      <footer className="
-           bg-gray-50 
-           dark:bg-gray-900
-           border-t border-gray-200 dark:border-gray-800">
+      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
             <div className="space-y-4">

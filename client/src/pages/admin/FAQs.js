@@ -8,7 +8,8 @@ import {
   FiSave,
   FiChevronUp,
   FiChevronDown,
-  FiSearch
+  FiSearch,
+  FiX
 } from 'react-icons/fi';
 import { 
   collection, 
@@ -23,22 +24,17 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import AdminLayout from './layout/AdminLayout';
-
-const FAQ_CATEGORIES = [
-  'General',
-  'Products',
-  'Orders',
-  'Delivery',
-  'Payment',
-  'Technical'
-];
+import Modal from '../../components/Modal';
+import Toast from '../../components/Toast';
 
 const FAQItem = ({ 
   faq, 
   editingId, 
   handleFAQUpdate, 
   setEditingId, 
-  handleFAQDelete 
+  handleFAQDelete,
+  categories,
+  saveFAQUpdates
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -69,8 +65,8 @@ const FAQItem = ({
                 onChange={(e) => handleFAQUpdate(faq.id, { category: e.target.value })}
                 className="w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
-                {FAQ_CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.name}>{cat.name}</option>
                 ))}
               </select>
             </div>
@@ -94,7 +90,7 @@ const FAQItem = ({
               Cancel
             </button>
             <button
-              onClick={() => setEditingId(null)}
+              onClick={() => saveFAQUpdates(faq.id)}
               className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
             >
               <FiSave /> Save
@@ -169,6 +165,7 @@ const FAQItem = ({
 
 const FAQs = () => {
   const [faqs, setFaqs] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isCreatingFAQ, setIsCreatingFAQ] = useState(false);
   const [newFAQ, setNewFAQ] = useState({ 
     question: '', 
@@ -182,51 +179,73 @@ const FAQs = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
-    const loadFAQs = async () => {
+    const loadData = async () => {
       try {
-        let q;
+        setLoading(true);
+        let faqsQuery;
+        
         if (selectedCategory === 'all') {
-          q = query(collection(db, 'faqs'), orderBy(sortBy, sortOrder));
+          faqsQuery = query(collection(db, 'faqs'), orderBy(sortBy, sortOrder));
         } else {
-          q = query(
+          faqsQuery = query(
             collection(db, 'faqs'),
             where('category', '==', selectedCategory),
             orderBy(sortBy, sortOrder)
           );
         }
-        
-        const snapshot = await getDocs(q);
-        const loadedFAQs = snapshot.docs.map(doc => ({ 
+
+        const [faqsSnapshot, categoriesSnapshot] = await Promise.all([
+          getDocs(faqsQuery),
+          getDocs(collection(db, 'faqCategories'))
+        ]);
+
+        const loadedFAQs = faqsSnapshot.docs.map(doc => ({ 
           id: doc.id, 
           ...doc.data(),
           order: doc.data().order || 0
         }));
+        
+        const loadedCategories = categoriesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
         setFaqs(loadedFAQs);
+        setCategories(loadedCategories);
       } catch (error) {
-        console.error('Error loading FAQs:', error);
+        console.error('Error loading data:', error);
+        setToast({ type: 'error', message: 'Failed to load data' });
       } finally {
         setLoading(false);
       }
     };
 
-    loadFAQs();
+    loadData();
   }, [selectedCategory, sortBy, sortOrder]);
 
   const handleFAQCreate = async () => {
-    if (!newFAQ.question || !newFAQ.answer || !newFAQ.category) return;
+    if (!newFAQ.question || !newFAQ.answer || !newFAQ.category) {
+      setToast({ type: 'warning', message: 'Please fill all required fields' });
+      return;
+    }
     
     try {
       const docRef = await addDoc(collection(db, 'faqs'), {
         ...newFAQ,
         order: parseInt(newFAQ.order) || 0
       });
-      setFaqs([...faqs, { ...newFAQ, id: docRef.id }]);
+      setFaqs([...faqs, { ...newFAQ, id: docRef.id, order: parseInt(newFAQ.order) || 0 }]);
       setNewFAQ({ question: '', answer: '', order: '', category: '' });
       setIsCreatingFAQ(false);
+      setToast({ type: 'success', message: 'FAQ created successfully' });
     } catch (error) {
       console.error('Error creating FAQ:', error);
+      setToast({ type: 'error', message: 'Failed to create FAQ' });
     }
   };
 
@@ -242,8 +261,10 @@ const FAQs = () => {
     try {
       await deleteDoc(doc(db, 'faqs', faqId));
       setFaqs(faqs.filter(faq => faq.id !== faqId));
+      setToast({ type: 'success', message: 'FAQ deleted successfully' });
     } catch (error) {
       console.error('Error deleting FAQ:', error);
+      setToast({ type: 'error', message: 'Failed to delete FAQ' });
     }
   };
 
@@ -259,8 +280,35 @@ const FAQs = () => {
         order: parseInt(faqToUpdate.order) || 0
       });
       setEditingId(null);
+      setToast({ type: 'success', message: 'FAQ updated successfully' });
     } catch (error) {
       console.error('Error updating FAQ:', error);
+      setToast({ type: 'error', message: 'Failed to update FAQ' });
+    }
+  };
+
+  const handleCategoryCreate = async () => {
+    if (!newCategoryName.trim()) {
+      setToast({ type: 'warning', message: 'Category name cannot be empty' });
+      return;
+    }
+
+    if (categories.some(cat => cat.name.toLowerCase() === newCategoryName.trim().toLowerCase())) {
+      setToast({ type: 'warning', message: 'Category already exists' });
+      return;
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, 'faqCategories'), {
+        name: newCategoryName.trim()
+      });
+      setCategories([...categories, { id: docRef.id, name: newCategoryName.trim() }]);
+      setShowAddCategory(false);
+      setNewCategoryName('');
+      setToast({ type: 'success', message: 'Category added successfully' });
+    } catch (error) {
+      console.error('Error adding category:', error);
+      setToast({ type: 'error', message: 'Failed to add category' });
     }
   };
 
@@ -283,7 +331,6 @@ const FAQs = () => {
           </button>
         </div>
 
-        {/* Create FAQ Form */}
         <AnimatePresence>
           {isCreatingFAQ && (
             <motion.div 
@@ -296,7 +343,7 @@ const FAQs = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Question
+                    Question <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -310,7 +357,7 @@ const FAQs = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Answer
+                    Answer <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     placeholder="Answer"
@@ -325,7 +372,7 @@ const FAQs = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Category
+                      Category <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={newFAQ.category}
@@ -334,8 +381,8 @@ const FAQs = () => {
                       required
                     >
                       <option value="">Select Category</option>
-                      {FAQ_CATEGORIES.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.name}>{cat.name}</option>
                       ))}
                     </select>
                   </div>
@@ -358,6 +405,7 @@ const FAQs = () => {
                   <button
                     onClick={handleFAQCreate}
                     className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                    disabled={!newFAQ.question || !newFAQ.answer || !newFAQ.category}
                   >
                     <FiPlus /> Add FAQ
                   </button>
@@ -367,7 +415,6 @@ const FAQs = () => {
           )}
         </AnimatePresence>
 
-        {/* Filters and Search */}
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -390,16 +437,25 @@ const FAQs = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Category
               </label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="all">All Categories</option>
-                {FAQ_CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="all">All Categories</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => setShowAddCategory(true)}
+                  className="p-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                  title="Add New Category"
+                >
+                  <FiPlus />
+                </button>
+              </div>
             </div>
 
             <div>
@@ -433,7 +489,6 @@ const FAQs = () => {
           </div>
         </div>
 
-        {/* FAQs List */}
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {loading ? (
             <div className="p-6 flex justify-center">
@@ -453,11 +508,53 @@ const FAQs = () => {
                   handleFAQUpdate={handleFAQUpdate}
                   setEditingId={setEditingId}
                   handleFAQDelete={handleFAQDelete}
+                  categories={categories}
+                  saveFAQUpdates={saveFAQUpdates}
                 />
               ))}
             </div>
           )}
         </div>
+
+        <Modal
+          isOpen={showAddCategory}
+          onClose={() => setShowAddCategory(false)}
+          title="Add New Category"
+        >
+          <div className="space-y-4">
+            <input
+              type="text"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder="Enter category name"
+              className="w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowAddCategory(false)}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCategoryCreate}
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                disabled={!newCategoryName.trim()}
+              >
+                Add Category
+              </button>
+            </div>
+          </div>
+        </Modal>
+
+        {toast && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            onClose={() => setToast(null)}
+          />
+        )}
       </div>
     </AdminLayout>
   );
