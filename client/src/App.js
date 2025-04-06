@@ -23,6 +23,9 @@ import HomeEdit from './pages/admin/HomeEdit';
 import SiteSettings from './pages/admin/Settings';
 import TechnologyEdit from './pages/admin/TechnologyEdit';
 import AdminSolutionsPage from './pages/admin/AdminSolutionsPage';
+import AdminAboutPage from './pages/admin/AdminAboutPage';
+import AdminContactPage from './pages/admin/AdminContactPage';
+
 
 
 
@@ -58,6 +61,9 @@ function App() {
             <Route path="/admin/site-settings" element={<SiteSettings />} />
             <Route path="/admin/technology" element={<TechnologyEdit />} />
             <Route path="/admin/Solutions" element={<AdminSolutionsPage />} />
+            <Route path="/admin/About" element={<AdminAboutPage />} />
+            <Route path="/admin/Contact" element={<AdminContactPage />} />
+
 
 
           {/* Admin Authentication */}

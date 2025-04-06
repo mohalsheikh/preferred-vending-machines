@@ -3,6 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion'; // Add this import
 import { FiChevronDown, FiChevronUp, FiLogOut } from 'react-icons/fi';
 import { Link, useLocation } from 'react-router-dom';
+import { FaCircleInfo } from "react-icons/fa6";
+import { IoMdContacts } from "react-icons/io";
 import { 
   FiGrid,
   FiShoppingBag,
@@ -22,6 +24,8 @@ const adminNavLinks = [
   { name: 'Edit Homepage', href: '/admin/edit-home', icon: <FiHome /> },
   { name: 'Technology Page Edit', href: '/admin/technology', icon: <FiTool /> },
   { name: 'Solutions Page Edit', href: '/admin/solutions', icon: <FaLightbulb /> },
+  { name: 'About Page Edit', href: '/admin/about', icon: <FaCircleInfo /> },
+  { name: 'Contact Page Edit', href: '/admin/contact', icon: <IoMdContacts /> },
   { name: 'Settings', href: '/admin/settings', icon: <FiSettings /> },
 
 ];

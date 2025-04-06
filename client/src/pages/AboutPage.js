@@ -1,8 +1,11 @@
-// src/pages/AboutPage.js
+// // src/pages/AboutPage.js
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { 
   FiCheckCircle, 
   FiUsers, 
@@ -17,14 +20,17 @@ import {
   FiMenu,
   FiMoon
 } from 'react-icons/fi';
+import * as FiIcons from 'react-icons/fi';
 
 function AboutPage() {
   const navigate = useNavigate();
-  const [isDark, setIsDark] = useState(() => 
-    localStorage.getItem('theme') === 'dark' || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const [isDark, setIsDark] = useState(() =>
+    localStorage.getItem('theme') === 'dark' ||
+    window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -36,11 +42,17 @@ function AboutPage() {
     { name: 'FAQ', href: '/FAQ' }
   ];
 
-  const team = [
-    { name: 'Rusty Popp', role: 'Founder & CEO', exp: '20+ years in vending industry', img: 'https://via.placeholder.com/200' },
-    { name: 'Service Team', role: 'Local Experts', exp: '24/7 maintenance crew', img: 'https://via.placeholder.com/200' },
-    { name: 'Nutritionists', role: 'Product Curators', exp: 'Healthy options specialists', img: 'https://via.placeholder.com/200' },
-  ];
+  // Using onSnapshot for real‑time updates from Firestore.
+  useEffect(() => {
+    const docRef = doc(db, 'aboutPage', 'content');
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setContent(docSnap.data());
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (isDark) {
@@ -52,17 +64,28 @@ function AboutPage() {
     }
   }, [isDark]);
 
+  if (loading || !content) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  const renderIcon = (iconName) => {
+    const IconComponent = FiIcons[iconName];
+    return IconComponent ? <IconComponent className="text-4xl text-primary-600 mb-4" /> : null;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       <Helmet>
-        <title>About Us - Preferred Vending</title>
-        <meta name="description" content="Discover Preferred Vending's story, mission, and commitment to local communities through premium vending solutions" />
+        <title>{content.meta?.title || 'About Us - Preferred Vending'}</title>
+        <meta name="description" content={content.meta?.description || "Discover Preferred Vending's story, mission, and commitment to local communities through premium vending solutions"} />
       </Helmet>
 
       {/* Navbar */}
-      <motion.nav className="bg-gray-50 
-       dark:bg-gray-900
-       border-t border-gray-200 dark:border-gray-800">
+      <motion.nav className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
@@ -105,7 +128,7 @@ function AboutPage() {
               </motion.button>
 
               <motion.button
-               onClick={() => navigate('/contact')}
+                onClick={() => navigate('/contact')}
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
@@ -149,7 +172,6 @@ function AboutPage() {
         </div>
       </motion.nav>
 
-
       {/* Founder Section */}
       <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
@@ -158,34 +180,31 @@ function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Our Story
+            {content.founderSection.title}
             <span className="block mt-4 bg-gradient-to-r from-primary-600 to-green-500 bg-clip-text text-transparent">
-              From Local Roots to Regional Service
+              {content.founderSection.subtitle}
             </span>
           </motion.h1>
           
           <div className="grid lg:grid-cols-2 gap-12 items-center mt-16">
             <div className="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
               <img 
-                src="https://via.placeholder.com/600x400.png?text=Rusty+Popp+Founder" 
-                alt="Rusty Popp Founder" 
+                src={content.founderSection.imageUrl} 
+                alt="Founder" 
                 className="w-full h-full object-cover" 
               />
             </div>
             
             <div className="text-left space-y-6">
               <h2 className="text-3xl font-bold dark:text-white">
-                "Building Better Vending Experiences"
+                "{content.founderSection.heading}"
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Founded by Rusty Popp in 2003, Preferred Vending began with a simple mission: provide 
-                high-quality vending solutions that benefit both businesses and their patrons. 
-                What started as a single machine in a local factory has grown into a regional leader 
-                through our commitment to:
+                {content.founderSection.description}
               </p>
               <ul className="space-y-4">
-                {['Premium equipment maintenance', 'Competitive pricing models', 'Diverse product selection', 'Community-focused service'].map((item) => (
-                  <li key={item} className="flex items-center gap-3">
+                {content.founderSection.bulletPoints.map((item, index) => (
+                  <li key={index} className="flex items-center gap-3">
                     <FiCheckCircle className="text-primary-600 text-xl flex-shrink-0" />
                     <span className="text-gray-700 dark:text-gray-300">{item}</span>
                   </li>
@@ -204,38 +223,19 @@ function AboutPage() {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8 text-left">
-            <motion.div 
-              className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg"
-              whileHover={{ y: -10 }}
-            >
-              <FiUsers className="text-4xl text-primary-600 mb-4" />
-              <h3 className="text-2xl font-bold dark:text-white mb-2">Customer First</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                "Only the Best for Your Customers, Employees, and Company"
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg"
-              whileHover={{ y: -10 }}
-            >
-              <FiPackage className="text-4xl text-primary-600 mb-4" />
-              <h3 className="text-2xl font-bold dark:text-white mb-2">Product Quality</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Curated selection of snacks for every stage of healthy eating
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg"
-              whileHover={{ y: -10 }}
-            >
-              <FiGlobe className="text-4xl text-primary-600 mb-4" />
-              <h3 className="text-2xl font-bold dark:text-white mb-2">Local Commitment</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Same-day service powered by remote inventory monitoring
-              </p>
-            </motion.div>
+            {content.missionPrinciples.map((principle, index) => (
+              <motion.div 
+                key={index}
+                className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg"
+                whileHover={{ y: -10 }}
+              >
+                {renderIcon(principle.icon)}
+                <h3 className="text-2xl font-bold dark:text-white mb-2">{principle.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {principle.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -245,14 +245,14 @@ function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
-              Community Focused Service
+              {content.localEmphasis.title}
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300">
-              As a locally-owned business, we understand the importance of reliable service:
+              {content.localEmphasis.description}
             </p>
             <ul className="space-y-4">
-              {['24/7 emergency maintenance', 'Bi-weekly freshness rotations', 'Seasonal product updates', 'Community donation program'].map((item) => (
-                <li key={item} className="flex items-center gap-3">
+              {content.localEmphasis.bulletPoints.map((item, index) => (
+                <li key={index} className="flex items-center gap-3">
                   <FiCheckCircle className="text-primary-600 text-xl flex-shrink-0" />
                   <span className="text-gray-700 dark:text-gray-300">{item}</span>
                 </li>
@@ -262,7 +262,7 @@ function AboutPage() {
           
           <div className="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
             <img 
-              src="https://via.placeholder.com/600x400.png?text=Local+Service+Team+in+Action" 
+              src={content.localEmphasis.imageUrl} 
               alt="Local Service" 
               className="w-full h-full object-cover" 
             />
@@ -276,40 +276,20 @@ function AboutPage() {
           <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-16">
             Beyond Vending Machines
           </h2>
-          
           <div className="grid md:grid-cols-3 gap-8">
-            <motion.div 
-              className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg text-center"
-              whileHover={{ y: -10 }}
-            >
-              <FiHeart className="text-4xl text-primary-600 mx-auto mb-4" />
-              <h3 className="text-xl font-bold dark:text-white mb-2">We Give Back</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                5% of profits support local food banks and youth programs
-              </p>
-            </motion.div>
-
-            <motion.div 
-              className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg text-center"
-              whileHover={{ y: -10 }}
-            >
-              <FiGlobe className="text-4xl text-primary-600 mx-auto mb-4" />
-              <h3 className="text-xl font-bold dark:text-white mb-2">Eco-Friendly</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Energy-efficient machines and recycling initiatives
-              </p>
-            </motion.div>
-
-            <motion.div 
-              className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg text-center"
-              whileHover={{ y: -10 }}
-            >
-              <FiUsers className="text-4xl text-primary-600 mx-auto mb-4" />
-              <h3 className="text-xl font-bold dark:text-white mb-2">Local Jobs</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                90% of our team lives within 50 miles of our clients
-              </p>
-            </motion.div>
+            {content.communityCommitment.map((commitment, index) => (
+              <motion.div 
+                key={index}
+                className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg text-center"
+                whileHover={{ y: -10 }}
+              >
+                {renderIcon(commitment.icon)}
+                <h3 className="text-xl font-bold dark:text-white mb-2">{commitment.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {commitment.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -321,28 +301,41 @@ function AboutPage() {
             Success Stories
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="p-6 bg-primary-50 dark:bg-gray-800 rounded-2xl">
-              <p className="text-lg italic mb-4">
-                "Preferred Vending transformed our break room with modern machines that employees love. 
-                Their local team keeps everything running perfectly."
-              </p>
-              <p className="font-bold">- Manufacturing Plant Manager</p>
-            </div>
-            <div className="p-6 bg-primary-50 dark:bg-gray-800 rounded-2xl">
-              <p className="text-lg italic mb-4">
-                "The healthy options and reliable service have made this partnership invaluable 
-                for our school district."
-              </p>
-              <p className="font-bold">- School District Administrator</p>
-            </div>
+            {content.testimonials.map((testimonial, index) => (
+              <div key={index} className="p-6 bg-primary-50 dark:bg-gray-800 rounded-2xl">
+                <p className="text-lg italic mb-4">"{testimonial.quote}"</p>
+                <p className="font-bold">{testimonial.author}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="py-24 bg-primary-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-16">
+            Our Team
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {content.teamMembers.map((member, index) => (
+              <div key={index} className="text-center">
+                <img 
+                  src={member.img} 
+                  alt={member.name} 
+                  className="w-48 h-48 rounded-full mx-auto mb-4 object-cover"
+                />
+                <h3 className="text-xl font-bold dark:text-white">{member.name}</h3>
+                <p className="text-primary-600 mb-2">{member.role}</p>
+                <p className="text-gray-600 dark:text-gray-400">{member.exp}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 
-       dark:bg-gray-900
-       border-t border-gray-200 dark:border-gray-800">
+      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
             <div className="space-y-4">

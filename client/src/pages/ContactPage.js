@@ -3,13 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-
-// 1) Firestore import
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // <-- Make sure this path is correct
-
+// Update the Firestore imports to include addDoc and collection
+import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
+import { db } from '../firebase';
 import emailjs from 'emailjs-com';
-
 import {
   FiMapPin,
   FiPhone,
@@ -34,6 +31,8 @@ function ContactPage() {
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [contactContent, setContactContent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Nav links
   const navLinks = [
@@ -46,6 +45,24 @@ function ContactPage() {
     { name: 'FAQ', href: '/FAQ' }
   ];
 
+  // Fetch contact content from Firestore
+  useEffect(() => {
+    const fetchContactContent = async () => {
+      try {
+        const docRef = doc(db, 'contactContent', 'content');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setContactContent(docSnap.data());
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching contact content:", error);
+        setLoading(false);
+      }
+    };
+    fetchContactContent();
+  }, []);
+
   // Handle form input
   const handleChange = (e) => {
     setFormData({
@@ -54,13 +71,13 @@ function ContactPage() {
     });
   };
 
-  // 2) Handle the form submission
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitStatus('');
 
     try {
-      // 2a) Save the message to Firestore
+      // Save the message to Firestore
       await addDoc(collection(db, 'contactMessages'), {
         name: formData.name,
         email: formData.email,
@@ -68,8 +85,7 @@ function ContactPage() {
         createdAt: new Date().toISOString(),
       });
 
-      // 2b) (Optional) Send email with EmailJS
-      //
+      // Send email with EmailJS
       await emailjs.send(
         'service_ghr2eof',
         'template_iz61gxi',
@@ -105,17 +121,23 @@ function ContactPage() {
     }
   }, [isDark]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       <Helmet>
         <title>Contact Us - Preferred Vending</title>
-        <meta name="description" content="Get in touch with Preferred Vending for sustainable vending solutions and expert support" />
+        <meta name="description" content={contactContent?.heroDescription || "Get in touch with Preferred Vending for sustainable vending solutions and expert support"} />
       </Helmet>
 
       {/* Navbar */}
-      <motion.nav className="bg-gray-50 
-       dark:bg-gray-900
-       border-t border-gray-200 dark:border-gray-800">
+      <motion.nav className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
@@ -161,7 +183,7 @@ function ContactPage() {
               </motion.button>
 
               <motion.button
-                 onClick={() => navigate('/contact')}
+                onClick={() => navigate('/contact')}
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
@@ -214,13 +236,13 @@ function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Let's Connect
+            {contactContent?.heroTitle || "Let's Connect"}
             <span className="block mt-4 bg-gradient-to-r from-primary-600 to-green-500 bg-clip-text text-transparent">
-              Get in Touch
+              {contactContent?.heroSubtitle || "Get in Touch"}
             </span>
           </motion.h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-            Have questions about our sustainable vending solutions? Our team is ready to help you revolutionize your retail operations.
+            {contactContent?.heroDescription || "Have questions about our sustainable vending solutions? Our team is ready to help you revolutionize your retail operations."}
           </p>
         </div>
       </section>
@@ -281,7 +303,7 @@ function ContactPage() {
 
               {submitStatus === 'success' && (
                 <div className="p-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-lg mt-4">
-                  Message sent successfully! We’ll respond within 24 hours.
+                  Message sent successfully! We'll respond within 24 hours.
                 </div>
               )}
               
@@ -293,7 +315,7 @@ function ContactPage() {
             </form>
           </motion.div>
 
-          {/* Contact Info, etc. */}
+          {/* Contact Info */}
           <div className="space-y-8">
             <div className="p-8 bg-primary-50 dark:bg-gray-800 rounded-2xl shadow-lg">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
@@ -303,7 +325,9 @@ function ContactPage() {
                   <FiMapPin className="text-primary-600 text-2xl mt-1 flex-shrink-0" />
                   <div>
                     <h4 className="font-medium text-gray-900 dark:text-white">Headquarters</h4>
-                    <p className="text-gray-600 dark:text-gray-400">123 Green Street, Eco City, EC1 1AA</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {contactContent?.address || "123 Green Street, Eco City, EC1 1AA"}
+                    </p>
                   </div>
                 </div>
                 
@@ -311,8 +335,12 @@ function ContactPage() {
                   <FiPhone className="text-primary-600 text-2xl mt-1 flex-shrink-0" />
                   <div>
                     <h4 className="font-medium text-gray-900 dark:text-white">Phone Support</h4>
-                    <p className="text-gray-600 dark:text-gray-400">+1 (555) 123-4567</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500">Mon-Fri: 9AM - 5PM (GMT)</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {contactContent?.phone || "+1 (555) 123-4567"}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                      {contactContent?.supportHours || "Mon-Fri: 9AM - 5PM (GMT)"}
+                    </p>
                   </div>
                 </div>
                 
@@ -320,23 +348,46 @@ function ContactPage() {
                   <FiMail className="text-primary-600 text-2xl mt-1 flex-shrink-0" />
                   <div>
                     <h4 className="font-medium text-gray-900 dark:text-white">Email Support</h4>
-                    <p className="text-gray-600 dark:text-gray-400">support@PreferredVendingprovides.com</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500">Average response time: 2 hours</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {contactContent?.email || "support@PreferredVendingprovides.com"}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                      {contactContent?.responseTime || "Average response time: 2 hours"}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Trust Badges, etc... */}
+            {/* Trust Badges */}
             <div className="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Why Choose Us</h3>
               <div className="grid grid-cols-2 gap-4">
-                {['24/7 Support', 'Industry Leaders', 'Eco Certified', '5-Star Rating'].map((item) => (
-                  <div key={item} className="flex items-center gap-3">
+                {contactContent?.trustItems?.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3">
                     <FiCheckCircle className="text-primary-600" />
                     <span className="text-gray-700 dark:text-gray-300">{item}</span>
                   </div>
-                ))}
+                )) || (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <FiCheckCircle className="text-primary-600" />
+                      <span className="text-gray-700 dark:text-gray-300">24/7 Support</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FiCheckCircle className="text-primary-600" />
+                      <span className="text-gray-700 dark:text-gray-300">Industry Leaders</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FiCheckCircle className="text-primary-600" />
+                      <span className="text-gray-700 dark:text-gray-300">Eco Certified</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FiCheckCircle className="text-primary-600" />
+                      <span className="text-gray-700 dark:text-gray-300">5-Star Rating</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -349,7 +400,7 @@ function ContactPage() {
           <div className="rounded-3xl overflow-hidden shadow-2xl">
             <iframe
               title="Preferred Vending Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2483.680384185614!2d-0.1277583842307394!3d51.50073247963429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487604ce3941eb1f%3A0x1a5342fdf089c627!2sLondon%20Eye!5e0!3m2!1sen!2suk!4v1633018229706!5m2!1sen!2suk"
+              src={contactContent?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2483.680384185614!2d-0.1277583842307394!3d51.50073247963429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487604ce3941eb1f%3A0x1a5342fdf089c627!2sLondon%20Eye!5e0!3m2!1sen!2suk!4v1633018229706!5m2!1sen!2suk"}
               width="100%"
               height="450"
               className="border-0"
@@ -361,26 +412,23 @@ function ContactPage() {
       </section>
 
       {/* Footer */}
-      <footer className="
-           bg-gray-50 
-           dark:bg-gray-900
-           border-t border-gray-200 dark:border-gray-800">        
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Preferred Vending</h3>
               <p className="text-sm">Innovating sustainable vending solutions through cutting-edge technology.</p>
               <div className="flex items-center gap-2">
                 <FiMapPin className="text-primary-600" />
-                <span>123 Green Street, Eco City</span>
+                <span>{contactContent?.address || "123 Green Street, Eco City"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <FiPhone className="text-primary-600" />
-                <span>+1 (555) 123-4567</span>
+                <span>{contactContent?.phone || "+1 (555) 123-4567"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <FiMail className="text-primary-600" />
-                <span>info@PreferredVendingprovides.com</span>
+                <span>{contactContent?.email || "info@PreferredVendingprovides.com"}</span>
               </div>
             </div>
             
@@ -420,7 +468,7 @@ function ContactPage() {
           
           <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
             <p className="text-gray-500 dark:text-gray-600">
-              © 2024 Preferred Vending. All rights reserved.
+              © {new Date().getFullYear()} Preferred Vending. All rights reserved.
             </p>
           </div>
         </div>
