@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { FaCheck } from "react-icons/fa";
 import Footer from './Footer';
 import { 
   FiCheckCircle, 
@@ -124,7 +125,7 @@ function ServicesPage() {
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
-                <FiShoppingCart /> Get Started
+                <FaCheck /> Get Started
               </motion.button>
             </div>
           </div>
