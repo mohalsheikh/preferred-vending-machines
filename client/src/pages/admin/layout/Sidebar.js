@@ -28,7 +28,7 @@ const adminNavLinks = [
   { name: 'About Page Edit', href: '/admin/about', icon: <FaCircleInfo /> },
   { name: 'Contact Page Edit', href: '/admin/contact', icon: <IoMdContacts /> },
   { name: 'Footer Edit', href: '/admin/footer', icon: <GiFootprint /> },
-  { name: 'Settings', href: '/admin/settings', icon: <FiSettings /> },
+  { name: 'Site Settings', href: '/admin/SiteSettings', icon: <FiSettings /> },
 
 ];
 

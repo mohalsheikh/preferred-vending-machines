@@ -1,8 +1,8 @@
 // SiteSettings.js
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import Footer from './Footer';
+import AdminLayout from './layout/AdminLayout';
 import {
   FiSave,
   FiDroplet,
@@ -185,6 +185,7 @@ const SiteSettings = () => {
   };
 
   return (
+    <AdminLayout title="Site Settings">
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sticky Header with Title & Buttons */}
       <div className="sticky top-0 bg-gray-50 dark:bg-gray-900 shadow-sm z-10 p-4 flex justify-between items-center">
@@ -409,6 +410,7 @@ const SiteSettings = () => {
         </AnimatePresence>
       </div>
     </div>
+    </AdminLayout>
   );
 };
 

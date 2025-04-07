@@ -123,7 +123,7 @@ import AdminProducts from './pages/admin/Products';
 import AdminFAQs from './pages/admin/FAQs';
 import AdminMessages from './pages/admin/Messages';
 import HomeEdit from './pages/admin/HomeEdit';
-import SiteSettings from './pages/admin/Settings';
+import SiteSettings from './pages/admin/SiteSettings';
 import TechnologyEdit from './pages/admin/TechnologyEdit';
 import AdminSolutionsPage from './pages/admin/AdminSolutionsPage';
 import AdminAboutPage from './pages/admin/AdminAboutPage';
@@ -166,7 +166,7 @@ function App() {
             <Route path="/admin/faqs" element={<AdminFAQs />} />
             <Route path="/admin/messages" element={<AdminMessages />} />
             <Route path="/admin/edit-home" element={<HomeEdit />} />
-            <Route path="/admin/site-settings" element={<SiteSettings />} />
+            <Route path="/admin/SiteSettings" element={<SiteSettings />} />
             <Route path="/admin/technology" element={<TechnologyEdit />} />
             <Route path="/admin/Solutions" element={<AdminSolutionsPage />} />
             <Route path="/admin/About" element={<AdminAboutPage />} />
