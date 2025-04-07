@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import Footer from './Footer';
 import {
   FiSave,
   FiDroplet,

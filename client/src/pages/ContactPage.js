@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 import emailjs from 'emailjs-com';
+import Footer from './Footer';
 import {
   FiMapPin,
   FiPhone,
@@ -38,12 +39,13 @@ function ContactPage() {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Technology', href: '/technology' },
-    { name: 'Products', href: '/products' },
     { name: 'Solutions', href: '/solutions' },
+    { name: 'Products', href: '/products' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'FAQ', href: '/FAQ' }
+    { name: 'FAQ', href: '/FAQ' },
+    { name: 'Contact', href: '/contact' }
   ];
+  
 
   // Fetch contact content from Firestore
   useEffect(() => {
@@ -412,67 +414,7 @@ function ContactPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-4 gap-8 text-gray-600 dark:text-gray-400">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Preferred Vending</h3>
-              <p className="text-sm">Innovating sustainable vending solutions through cutting-edge technology.</p>
-              <div className="flex items-center gap-2">
-                <FiMapPin className="text-primary-600" />
-                <span>{contactContent?.address || "123 Green Street, Eco City"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FiPhone className="text-primary-600" />
-                <span>{contactContent?.phone || "+1 (555) 123-4567"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FiMail className="text-primary-600" />
-                <span>{contactContent?.email || "info@PreferredVendingprovides.com"}</span>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Products</h3>
-              <ul className="space-y-2">
-                {['Smart Vending', 'Inventory System', 'Mobile App', 'Analytics'].map((item) => (
-                  <li key={item}>
-                    <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Company</h3>
-              <ul className="space-y-2">
-                {['About Us', 'Careers', 'Blog', 'Partners'].map((item) => (
-                  <li key={item}>
-                    <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Legal</h3>
-              <ul className="space-y-2">
-                {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'FAQs'].map((item) => (
-                  <li key={item}>
-                    <a href="/" className="hover:text-primary-600 transition-colors">{item}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
-            <p className="text-gray-500 dark:text-gray-600">
-              © {new Date().getFullYear()} Preferred Vending. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
