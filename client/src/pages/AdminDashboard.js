@@ -38,6 +38,8 @@ import {
   FiSettings,
   FiGrid
 } from 'react-icons/fi';
+import { FaCheck } from "react-icons/fa";
+
 
 const CATEGORY_OPTIONS = [
   'waters',
@@ -80,6 +82,7 @@ const publicNavLinks = [
   { name: 'Home', href: '/' },
   { name: 'Technology', href: '/technology' },
   { name: 'Products', href: '/products' },
+  { name: 'Services', href: '/services' },
   { name: 'Solutions', href: '/solutions' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },

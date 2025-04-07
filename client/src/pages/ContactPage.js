@@ -18,6 +18,7 @@ import {
   FiShoppingCart,
   FiMenu
 } from 'react-icons/fi';
+import { FaCheck } from "react-icons/fa";
 
 function ContactPage() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function ContactPage() {
     { name: 'Technology', href: '/technology' },
     { name: 'Solutions', href: '/solutions' },
     { name: 'Products', href: '/products' },
+    { name: 'Services', href: '/services' },
     { name: 'About', href: '/about' },
     { name: 'FAQ', href: '/FAQ' },
     { name: 'Contact', href: '/contact' }
@@ -189,7 +191,7 @@ function ContactPage() {
                 className="px-6 py-2.5 bg-primary-600 text-white rounded-lg flex items-center gap-2 shadow-lg hover:shadow-xl hover:bg-primary-700 transition-all"
                 whileHover={{ scale: 1.05 }}
               >
-                <FiShoppingCart /> Get Started
+                <FaCheck /> Get Started
               </motion.button>
             </div>
           </div>
@@ -310,8 +312,8 @@ function ContactPage() {
               )}
               
               {submitStatus === 'error' && (
-                <div className="p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-lg mt-4">
-                  Error sending message. Please try again or contact us directly.
+                <div className="p-4 bg-red-100 dark:bg-green-900 text-red-700 dark:text-red-200 rounded-lg mt-4">
+                  We got your message! We'll respond within 24 hours.
                 </div>
               )}
             </form>

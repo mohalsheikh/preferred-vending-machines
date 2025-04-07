@@ -129,6 +129,8 @@ import AdminSolutionsPage from './pages/admin/AdminSolutionsPage';
 import AdminAboutPage from './pages/admin/AdminAboutPage';
 import AdminContactPage from './pages/admin/AdminContactPage';
 import AdminFooterPage from './pages/admin/AdminFooterPage';
+import AdminServicesPage from './pages/admin/AdminServicesPage';
+
 
 
 
@@ -159,8 +161,9 @@ function App() {
           <Route path="/solutions" element={<SolutionsPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/footer" element={<Footer />} />
+          <Route path="/footer" element={<Footer />} />
 
-
+          
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/faqs" element={<AdminFAQs />} />
@@ -172,8 +175,10 @@ function App() {
             <Route path="/admin/About" element={<AdminAboutPage />} />
             <Route path="/admin/Contact" element={<AdminContactPage />} />
             <Route path="/admin/footer" element={<AdminFooterPage />} />
+            <Route path="/admin/services" element={<AdminServicesPage />} />
 
 
+            
 
 
           {/* Admin Authentication */}

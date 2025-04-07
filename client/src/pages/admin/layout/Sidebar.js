@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaCircleInfo } from "react-icons/fa6";
 import { IoMdContacts } from "react-icons/io";
 import { GiFootprint } from "react-icons/gi";
+import { GrServices } from "react-icons/gr";
 import { 
   FiGrid,
   FiShoppingBag,
@@ -26,6 +27,7 @@ const adminNavLinks = [
   { name: 'Technology Page Edit', href: '/admin/technology', icon: <FiTool /> },
   { name: 'Solutions Page Edit', href: '/admin/solutions', icon: <FaLightbulb /> },
   { name: 'About Page Edit', href: '/admin/about', icon: <FaCircleInfo /> },
+  { name: 'Services Page Edit', href: '/admin/services', icon: <GrServices /> },
   { name: 'Contact Page Edit', href: '/admin/contact', icon: <IoMdContacts /> },
   { name: 'Footer Edit', href: '/admin/footer', icon: <GiFootprint /> },
   { name: 'Site Settings', href: '/admin/SiteSettings', icon: <FiSettings /> },

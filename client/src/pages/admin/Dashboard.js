@@ -83,14 +83,14 @@ const QuickActions = () => (
     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
     <div className="grid grid-cols-2 gap-3">
       <a
-        href="/admin/products/new"
+        href="/admin/products"
         className="p-3 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-lg flex flex-col items-center transition-colors"
       >
         <FiPlus className="text-blue-600 dark:text-blue-300 text-xl mb-2" />
         <span className="text-sm font-medium text-blue-600 dark:text-blue-300">Add Product</span>
       </a>
       <a
-        href="/admin/faqs/new"
+        href="/admin/faqs"
         className="p-3 bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg flex flex-col items-center transition-colors"
       >
         <FiHelpCircle className="text-green-600 dark:text-green-300 text-xl mb-2" />
@@ -278,14 +278,14 @@ const Dashboard = () => {
             <StatCard 
               title="Monthly Visitors" 
               value={stats.visitors} 
-              change="+12% from last month"
+              // change="+12% from last month"
               icon={<FiUsers />}
               color="purple"
             />
             <StatCard 
               title="Pending Orders" 
               value={stats.orders} 
-              change="+5 today"
+              // change="+5 today"
               icon={<FiShoppingCart />}
               color="green"
             />
