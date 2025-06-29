@@ -31,10 +31,16 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "generate-sitemap": "node generate-sitemap.js",
+    "postbuild": "npm run generate-sitemap && react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
+  "reactSnap": {
+    "inlineCss": true,
+    "removeBlobs": true
+  },
+    "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"

@@ -41,6 +41,7 @@ import {
 import { FaCheck } from "react-icons/fa";
 
 
+
 const CATEGORY_OPTIONS = [
   'waters',
   'specialty-waters',

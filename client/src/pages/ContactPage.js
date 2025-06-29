@@ -19,6 +19,17 @@ import {
   FiMenu
 } from 'react-icons/fi';
 import { FaCheck } from "react-icons/fa";
+import { Helmet } from 'react-helmet';
+
+<Helmet>
+  <title>Home | Abounding Machines</title>
+  <meta name="description" content="Top-tier vending machine solutions by Abounding Machines. Free installation, maintenance, and upgrades." />
+  <meta name="keywords" content="vending machines, free vending, office vending, school vending, Abounding Machines" />
+  <meta property="og:title" content="Abounding Machines" />
+  <meta property="og:description" content="Modern vending machines for your business or school." />
+  <meta property="og:image" content="/your-social-image.jpg" />
+  <meta name="robots" content="index, follow" />
+</Helmet>
 
 function ContactPage() {
   const navigate = useNavigate();
