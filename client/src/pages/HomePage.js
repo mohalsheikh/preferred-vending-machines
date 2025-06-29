@@ -238,6 +238,37 @@ function HomePage() {
   </motion.div>
 </section>
 
+{content?.bannerImages?.length > 0 && (
+  <section className="py-12 bg-white dark:bg-gray-900">
+    <div className="max-w-7xl mx-auto px-4">
+      <h2 className="text-3xl font-bold text-center mb-8 dark:text-white">Explore Our Solutions</h2>
+      <Swiper
+        modules={[Autoplay, EffectCreative]}
+        slidesPerView={1}
+        loop
+        autoplay={{ delay: 3000 }}
+        effect="creative"
+        creativeEffect={{
+          prev: { shadow: true, translate: ['-20%', 0, -1] },
+          next: { translate: ['100%', 0, 0] },
+        }}
+        className="rounded-3xl overflow-hidden shadow-xl"
+      >
+        {content.bannerImages.map((url, idx) => (
+          <SwiperSlide key={idx}>
+            <img
+              src={url}
+              alt={`Banner ${idx + 1}`}
+              className="w-full h-[500px] object-cover"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  </section>
+)}
+
+
   <section className="relative py-24 bg-gradient-to-r from-primary-500 to-primary-700 text-white">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <motion.div

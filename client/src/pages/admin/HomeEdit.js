@@ -210,8 +210,10 @@ const HomeEdit = () => {
     { id: 'hero', label: 'Hero Section' },
     { id: 'freeVending', label: 'Free Vending' },
     { id: 'technology', label: 'Technology' },
+    { id: 'images', label: 'Images' }, // ✅ Add this line
     { id: 'footer', label: 'Footer' }
   ];
+  
 
   return (
     <AdminLayout title="Home Page Editor">
@@ -539,6 +541,94 @@ const HomeEdit = () => {
               </div>
             </SectionEditor>
           )}
+
+{activeSection === 'images' && (
+  <SectionEditor title="Homepage Images">
+    <h3 className="text-sm font-medium text-gray-500 mb-4">Banner Images</h3>
+    <div className="space-y-4">
+      {content?.bannerImages?.map((img, idx) => (
+        <div key={idx} className="flex items-center gap-4">
+          {/* Image Preview */}
+          <img src={img} alt={`Banner ${idx}`} className="w-24 h-16 object-cover rounded-lg border dark:border-gray-600" />
+
+          {/* Image URL field */}
+          <TextField
+            label={`Image URL ${idx + 1}`}
+            value={img}
+            onChange={(e) => {
+              const updated = [...content.bannerImages];
+              updated[idx] = e.target.value;
+              setContent(prev => ({ ...prev, bannerImages: updated }));
+            }}
+          />
+
+          {/* Upload Image Button */}
+          <label className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600">
+            Upload
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (file.size > 5 * 1024 * 1024) {
+                  toast.error('Image must be under 5MB');
+                  return;
+                }
+
+                const storageRef = ref(storage, `homepage/banner_${Date.now()}_${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                uploadTask.on(
+                  'state_changed',
+                  () => {},
+                  (error) => {
+                    console.error('Upload error:', error);
+                    toast.error('Upload failed');
+                  },
+                  async () => {
+                    const url = await getDownloadURL(uploadTask.snapshot.ref);
+                    const updated = [...content.bannerImages];
+                    updated[idx] = url;
+                    setContent(prev => ({ ...prev, bannerImages: updated }));
+                    toast.success('Image uploaded!');
+                  }
+                );
+              }}
+              className="hidden"
+            />
+          </label>
+
+          {/* Delete Button */}
+          <button
+            onClick={() => {
+              const updated = content.bannerImages.filter((_, i) => i !== idx);
+              setContent(prev => ({ ...prev, bannerImages: updated }));
+            }}
+            className="text-red-500"
+          >
+            <FiX />
+          </button>
+        </div>
+      ))}
+
+      {/* Add New Image Field */}
+      <button
+        onClick={() =>
+          setContent(prev => ({
+            ...prev,
+            bannerImages: [...(prev.bannerImages || []), '']
+          }))
+        }
+        className="px-4 py-2 bg-primary-600 text-white rounded-lg flex items-center gap-2 hover:bg-primary-700"
+      >
+        <FiPlus /> Add Image
+      </button>
+    </div>
+  </SectionEditor>
+)}
+
+
         </div>
       </div>
     </AdminLayout>
